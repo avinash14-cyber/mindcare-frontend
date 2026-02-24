@@ -24,7 +24,7 @@ const Confirmation = ({booked,bookFunc}) => {
           </div>
           <p className='text-light fs-4 fw-normal'>{formattedDate}</p>
 
-          <button onClick={bookFunc} className='p-1 rounded fw-semibold rounded-3 bg-info text-dark border-0 fs-4'>BOOK APPOINTMENT</button>
+          <button onClick={bookFunc} data-bs-dismiss="modal" className='p-1 rounded fw-semibold rounded-3 bg-info text-dark border-0 fs-4'>BOOK APPOINTMENT</button>
           </div>
           
          </div>

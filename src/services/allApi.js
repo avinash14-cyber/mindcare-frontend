@@ -86,3 +86,21 @@ export const chooseDoctorApi=async(reqBody)=>{
 export const bookAppointmentApi=async(reqBody,reqHeader)=>{
     return await commonAPI("POST",`${serverURL}/book_appoinment`,reqBody,reqHeader)
 }
+
+// follow up api
+
+export const followUpApi=async(reqHeader)=>{
+    return await commonAPI("GET",`${serverURL}/follow_up`,"",reqHeader)
+}
+
+// follow up time
+
+export const followUpTimeApi=async(reqBody)=>{
+    return await commonAPI("POST",`${serverURL}/followup_date`,reqBody)
+}
+
+// appointment details
+
+export const appointmentShowApi=async(reqHeader)=>{
+    return await commonAPI("GET",`${serverURL}/show_appointment`,"",reqHeader)
+}

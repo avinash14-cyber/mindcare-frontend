@@ -4,13 +4,17 @@ import { faBullseye, faCalendarCheck, faPlus, faStar } from '@fortawesome/free-s
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GiMeditation } from "react-icons/gi";
 import { isExpired } from '../utils/isValidUtil';
-import { bookAppointmentApi, chooseDoctorApi } from '../services/allApi';
+import { appointmentShowApi, bookAppointmentApi, chooseDoctorApi, followUpApi, followUpTimeApi } from '../services/allApi';
 import Session from './appointments/Session';
 import DateandTime from './appointments/DateandTime';
 import ChooseDoc from './appointments/ChooseDoc';
 import Confirmation from './appointments/Confirmation';
 import FollowupIntro from './appointments/FollowupIntro';
 import FollowupConfirm from './appointments/FollowupConfirm';
+import FollowDate from './appointments/FollowDate';
+import Swal from 'sweetalert2'
+import dayjs from "dayjs";
+
 
 const PatientAppointments = () => {
 
@@ -35,6 +39,8 @@ const PatientAppointments = () => {
 
   
   const[availableDocs,setAvailableDocs]=useState([])
+  const[followtime,setFollowTime]=useState([])
+  const[showappo,setShowAppo]=useState([])
   const[appointment,setAppointment]=useState({
     date:"",
     time:"",
@@ -42,7 +48,7 @@ const PatientAppointments = () => {
     session:""
   })
  
- console.log(appointment);
+const [followup,setFollowUp]=useState([])
  
   
 
@@ -54,9 +60,16 @@ const renderContent = () => {
   if (appointment.session === "Follow Up") {
     switch (stepper) {
       case 1:
-        return <FollowupIntro/>
+        return <FollowupIntro setDoctor={docid=>(setAppointment(prev=>({...prev,doctor:docid})))} details={followup} nextfunc={handleNext} setSession={(value)=>(setAppointment(prev=>({...prev,session:value})))}/>
       case 2:
-        return <FollowupConfirm/>
+        return <FollowDate followslot={followtime} date={appointment.date} time={appointment.time}  onDateChange={(date) =>
+    setAppointment(prev => ({ ...prev, date }))
+  }
+  onTimeChange={(time) =>
+    setAppointment(prev => ({ ...prev, time }))
+  }/>  
+      case 3:
+        return <FollowupConfirm booked={appointment} bookingFunc={handleBooking}/>
       
       default:
         return null;
@@ -89,9 +102,9 @@ const isValid = () => {
   if (appointment.session === "Follow Up") {
     switch (stepper) {
       case 1:
-        return true; 
+        return appointment.doctor; 
       case 2:
-        return true;
+        return appointment.date && appointment.time;
       case 3:
         return true;
       default:
@@ -114,6 +127,16 @@ const isValid = () => {
   }
 };
 
+const handleFollowUpTime=async()=>{
+  try{
+
+    const result=await followUpTimeApi({date:appointment.date,id:appointment.doctor.id})
+    setFollowTime(result.data)
+  }catch(err){
+    alert(err)
+  }
+}
+
 
 const handleNext=()=>{
   if(!isValid()){
@@ -135,15 +158,44 @@ const handleClose=()=>{
 }
 
 const handleBooking=async()=>{
+
+  
   try{
       const tok=sessionStorage.getItem("Token")
    const reqHeader={
         "Authorization":`Bearer ${tok}`
       }  
       const result=await bookAppointmentApi(appointment,reqHeader)
-    
+    if(result.status==200){
+     Swal.fire({
+  title: "Appointment Booked",
+  icon: "success",
+  background: "rgb(38, 40, 40)",
+  color: "#ffffff",
+  iconColor: "#0dcaf0", 
+  confirmButtonColor: "#0dcaf0"
+});
+    }
+    else if(result.status==500){
+      Swal.fire({
+  title: "Booking failed",
+  icon: "error",
+  background: "rgb(38, 40, 40)",
+  color: "#ffffff",
+  iconColor: "#be1900", 
+  confirmButtonColor: "#0dcaf0"
+});
+    }
+    handleClose();
   }catch(err){
-        alert(err)
+        Swal.fire({
+  title: err,
+  icon: "error",
+  background: "rgb(38, 40, 40)",
+  color: "#ffffff",
+  iconColor: "#be1900", 
+  confirmButtonColor: "#0dcaf0"
+});
   }
 }
 
@@ -151,9 +203,31 @@ const handleDoclist=async()=>{
   console.log(`inside func ${appointment.date}`);
   
   const result= await chooseDoctorApi({date:appointment.date,time:appointment.time})
-  console.log(result.data);
+  
   setAvailableDocs(result.data)
  }
+
+useEffect(() => {
+  if (
+    appointment.session !== "Follow Up" ||
+    !appointment.date ||
+    !appointment.doctor
+  ) return;
+
+  handleFollowUpTime();
+}, [appointment.date, appointment.doctor]);
+
+ useEffect(()=>{
+  const fetchFollowup=async()=>{
+    const tok=sessionStorage.getItem("Token")
+   const reqHeader={
+        "Authorization":`Bearer ${tok}`
+      }  
+    const result=await followUpApi(reqHeader)
+    setFollowUp(result.data)
+  }
+  fetchFollowup()
+ },[])
  
  useEffect(()=>{
   if(appointment.date && appointment.time){
@@ -163,11 +237,35 @@ const handleDoclist=async()=>{
 
 
 
+
 useEffect(() => {
   if (!appointment.date || !appointment.time) return;
 
   setAppointment(prev => ({ ...prev, time: "" }));
 }, [appointment.date]);
+
+
+useEffect(()=>{
+   const showAppointment=async()=>{
+    const tok=sessionStorage.getItem("Token")
+const reqHeader={
+        "Authorization":`Bearer ${tok}`
+      }  
+  const result=await appointmentShowApi(reqHeader)
+  setShowAppo(result.data)
+   }
+   showAppointment()
+},[])
+console.log(showappo);
+const day = dayjs(showappo.date).format("DD");     
+const month = dayjs(showappo.date).format("MMM");  
+const weekday = dayjs(showappo.date).format("dddd"); 
+const formattedTime = dayjs()
+  .hour(Number(showappo.hour))
+  .minute(Number(showappo.minute))
+  .format("hh:mm A");
+
+
 
   return (
     <div className='min-vh-100 w-100'>
@@ -187,9 +285,9 @@ useEffect(() => {
              <div className='w-100 d-flex flex-row justify-content-between p-2'style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
                  
                  <div className='d-flex flex-column ms-2 p-1 rounded rounded-2 border' style={{backgroundColor:'rgb(38 40 40)'}}>
-                   <p className='text-info mb-0 fs-5 fw-medium'>Sep 15</p>
-                   <p className='mt-0 mb-0' style={{color:'rgb(167 169 169 / 70%)'}}>Monday</p>
-                   <p className='text-light mt-0 mb-0'>10:00 AM</p>
+                   <p className='text-info mb-0 fs-5 fw-medium'>{month} {day}</p>
+                   <p className='mt-0 mb-0' style={{color:'rgb(167 169 169 / 70%)'}}>{weekday}</p>
+                   <p className='text-light mt-0 mb-0'>{formattedTime}</p>
                  </div>
                  <div className='d-flex flex-row gap-2'>
                 <div className='d-flex align-items-center justify-content-center text-light h-25 p-2 rounded rounded-3' style={{backgroundColor:'rgb(167 169 169 / 70%)'}}>
@@ -204,8 +302,8 @@ useEffect(() => {
                     EC
                 </div>
                 <div className='d-flex flex-column'>
-               <h4 className='text-light mb-1'>Dr.Emily Chen</h4>
-               <p className='mb-1 mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>Clinical Psychologist</p>
+               <h4 className='text-light mb-1'>{`Dr.${showappo?.doctorId?.name}`}</h4>
+               <p className='mb-1 mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>{showappo?.doctorId?.speciality}</p>
                <p className='p-1 mt-0 rounded rounded-2' style={{backgroundColor:'rgb(180 83 9 / 15%)',color:'rgb(167 169 169 / 70%)'}}>Council Session #9</p>
                 </div>
               </div>
@@ -296,7 +394,8 @@ useEffect(() => {
       </div>
       <div class="modal-footer">
         <button type="button" onClick={()=>handleClose()} class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-       {stepper==1||appointment.session=="Follow Up"?'': <button type="button" class="btn btn-primary" onClick={()=>setStepper(stepper-1)}>Prev</button>}
+       {stepper==1?'': <button type="button" class="btn btn-primary" onClick={()=>setStepper(stepper-1)}>Prev</button>}
+       
        <button disabled={!isValid()} type="button" class="btn btn-primary" onClick={()=>handleNext()}>Next</button>
       </div>
     </div>

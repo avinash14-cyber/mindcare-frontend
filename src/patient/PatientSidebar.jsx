@@ -35,7 +35,7 @@ const handleLogout=()=>{
       navigate("/",{replace:true})
      },0.2)
 }
-console.log(patient);
+
 
   return (
 
