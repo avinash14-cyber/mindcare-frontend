@@ -14,7 +14,7 @@ import FollowupConfirm from './appointments/FollowupConfirm';
 import FollowDate from './appointments/FollowDate';
 import Swal from 'sweetalert2'
 import dayjs from "dayjs";
-
+import img from '../assets/no_appo.png'
 
 const PatientAppointments = () => {
 
@@ -47,7 +47,7 @@ const PatientAppointments = () => {
     doctor:"",
     session:""
   })
- 
+ const [loading, setLoading] = useState(true);
 const [followup,setFollowUp]=useState([])
  
   
@@ -207,6 +207,48 @@ const handleDoclist=async()=>{
   setAvailableDocs(result.data)
  }
 
+ const isMoreThanOne=()=>{
+  const appointmentTime = dayjs(showappo?.date) // e.g. "2026-02-27"
+  .hour(Number(showappo?.hour))
+  .minute(Number(showappo?.minute))
+  .second(0);
+
+const now = dayjs();
+
+const diffInMinutes = appointmentTime.diff(now, 'minute');
+
+return diffInMinutes > 60;
+ }
+
+ const handleDelete=async()=>{
+  if(!isMoreThanOne()){
+    return
+  }else{
+    Swal.fire({
+  title: "Are you sure you want to cancel the appointment?",
+ background: "rgb(38, 40, 40)",
+ color: "#ffffff",
+  showCancelButton: true,
+  confirmButtonText: "Yes",
+  confirmButtonColor: "#0dcaf0"
+  
+}).then((result) => {
+  if (result.isConfirmed) {
+     Swal.fire({
+  title: "Appointment Deleted",
+  icon: "success",
+  background: "rgb(38, 40, 40)",
+  color: "#ffffff",
+  iconColor: "#0dcaf0", 
+  confirmButtonColor: "#0dcaf0"
+});
+    
+  } 
+});
+  }
+
+ }
+
 useEffect(() => {
   if (
     appointment.session !== "Follow Up" ||
@@ -253,16 +295,17 @@ const reqHeader={
       }  
   const result=await appointmentShowApi(reqHeader)
   setShowAppo(result.data)
+  setLoading(false);
    }
    showAppointment()
 },[])
-console.log(showappo);
-const day = dayjs(showappo.date).format("DD");     
-const month = dayjs(showappo.date).format("MMM");  
-const weekday = dayjs(showappo.date).format("dddd"); 
+
+const day = dayjs(showappo?.date).format("DD");     
+const month = dayjs(showappo?.date).format("MMM");  
+const weekday = dayjs(showappo?.date).format("dddd"); 
 const formattedTime = dayjs()
-  .hour(Number(showappo.hour))
-  .minute(Number(showappo.minute))
+  .hour(Number(showappo?.hour))
+  .minute(Number(showappo?.minute))
   .format("hh:mm A");
 
 
@@ -280,8 +323,12 @@ const formattedTime = dayjs()
             <button  className='bg-info text-dark p-1 fw-bold rounded rounded-2'data-bs-toggle="modal" data-bs-target="#staticBackdrop" >Book New Session <FontAwesomeIcon className='ms-1 fs-4 fw-medium text-warning' icon={faPlus} /></button>
           </div>
           <h3 className='text-light w-100 start-0 mt-3'>Upcoming Sessions</h3>
-
-          <div className='container d-flex flex-column '>
+          {loading ? (
+  <div className="d-flex justify-content-center align-items-center w-100" style={{ minHeight: "300px" }}>
+    <div className="spinner-border text-info" role="status" />
+  </div>
+):showappo?
+           <div className='container d-flex flex-column '>
              <div className='w-100 d-flex flex-row justify-content-between p-2'style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
                  
                  <div className='d-flex flex-column ms-2 p-1 rounded rounded-2 border' style={{backgroundColor:'rgb(38 40 40)'}}>
@@ -293,7 +340,7 @@ const formattedTime = dayjs()
                 <div className='d-flex align-items-center justify-content-center text-light h-25 p-2 rounded rounded-3' style={{backgroundColor:'rgb(167 169 169 / 70%)'}}>
                     Confirmed
                 </div>
-                <p style={{color:'rgb(167 169 169 / 70%)'}}>3 Days left</p>
+                
                  </div>
              </div>
              <div className='d-flex align-items-center flex-row justify-content-between p-2 w-100' style={{backgroundColor:'rgb(38 40 40)'}}>
@@ -310,7 +357,7 @@ const formattedTime = dayjs()
               <div className='d-flex flex-row h-25 gap-2 align-items-center'>
                 <button type="button" class="btn btn-info">Join video Call</button>
                 <button type="button" class="btn btn-outline-secondary">Message</button>
-                <button type="button" class="btn btn-outline-danger">Cancel</button>
+                <button onClick={()=>handleDelete()} type="button" class="btn btn-outline-danger">Cancel</button>
 
               </div>
              </div>
@@ -320,7 +367,12 @@ const formattedTime = dayjs()
             <p style={{color:'rgb(167 169 169 / 70%)'}}> <GiMeditation className='me-1 test-light' /> Ease your mind before the session </p>
              
              </div>
-          </div>
+          </div>:
+          <div className='d-flex flex-column align-items-center'>
+            <img src={img} className='img-fluid ' style={{width:'350px',height:'350px'}} alt="" />
+            <p className='text-light fs-1 fw-semibold'>Ooops!No active appointments</p>
+            </div>}
+         
           <h3 className='text-light w-100 start-0 mt-3'> Session History</h3>
           <div className='container d-flex flex-coulmn'>
             <div className='w-100 d-flex flex-column border rounded rounded-2'  style={{backgroundColor:'rgb(38 40 40)'}}>

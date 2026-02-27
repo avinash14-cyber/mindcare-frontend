@@ -17,9 +17,10 @@ import { GoHeartFill } from "react-icons/go";
 import { IoIosCloseCircle } from "react-icons/io";
 import { faCalendarCheck, faHeart, faHouse, faMedal, faMessage, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { PatientContext } from '../context/UserContext';
-import {handleMoodApi} from '../services/allApi'
+import {appointmentShowApi, handleMoodApi} from '../services/allApi'
 import { useNavigate } from 'react-router-dom';
-
+import img from '../assets/no_appo.png'
+import dayjs from "dayjs";
 
 
 
@@ -35,6 +36,8 @@ const PatientDashboard = () => {
   const[quickcheck,setQuickcheck]=useState(false)
   const[guided,setGuided]=useState(false)
   const[seconds,setSeconds]=useState(300)
+  const[showappo,setShowAppo]=useState([])
+  const[loader,setLoader]=useState(true)
   const timerRef = useRef(null);
 
  
@@ -139,8 +142,33 @@ const PatientDashboard = () => {
 
 
 
+useEffect(()=>{
+   const showAppointment=async()=>{
+    const tok=sessionStorage.getItem("Token")
+const reqHeader={
+        "Authorization":`Bearer ${tok}`
+      }  
+  const result=await appointmentShowApi(reqHeader)
+  setShowAppo(result.data)
+  setLoader(false)
+   }
+   showAppointment()
+},[])
 
-
+const day = dayjs(showappo?.date).format("DD");     
+const month = dayjs(showappo?.date).format("MMM");  
+const weekday = dayjs(showappo?.date).format("dddd"); 
+const formattedTime = dayjs()
+  .hour(Number(showappo?.hour))
+  .minute(Number(showappo?.minute))
+  .format("hh:mm A");
+  const appointmentDateTime = dayjs(showappo?.date)
+  .hour(Number(showappo?.hour))
+  .minute(Number(showappo?.minute))
+  .second(0);
+const now = dayjs();
+const diffInDays = appointmentDateTime.diff(now, "day");
+const diffInHours = appointmentDateTime.diff(now, "hour") % 24;
   return (
     <div className='w-100 min-vh-100'>
         <div className='row m-0 '>
@@ -203,20 +231,28 @@ const PatientDashboard = () => {
               </div>
               </div>
               <div className="col-md-3 col-8 position-relative topline overflow-hidden rounded rounded-3 border   d-flex flex-column"style={{background:'linear-gradient(135deg,rgb(107 33 168 / 15%),rgb(190 24 93 / 15%))',minHeight:'260px'}}>
-              <h4 className='text-light mt-2'>Next Session</h4>
+             {loader? <div className="d-flex justify-content-center my-auto align-items-center h-100 w-100" >
+    <div className="spinner-border text-info" role="status" />
+  </div>:showappo?<><h4 className='text-light mt-2'>Next Session</h4>
               <div className='d-flex flex-row'>
-               <p className='text-info text-center'><span className=' fw-medium'>3</span> <br /><span style={{color:'rgb(167 169 169 / 70%)'}}> Days</span></p>
-              <p className='text-info ms-4 text-center'><span className=' fw-medium'>14</span> <br /><span style={{color:'rgb(167 169 169 / 70%)'}}> Hours</span></p>
+               <p className='text-info text-center'><span className=' fw-medium'>{diffInDays}</span> <br /><span style={{color:'rgb(167 169 169 / 70%)'}}> Days</span></p>
+              <p className='text-info ms-4 text-center'><span className=' fw-medium'>{diffInHours}</span> <br /><span style={{color:'rgb(167 169 169 / 70%)'}}> Hours</span></p>
 
               </div>
               <div className='d-flex flex-column w-100'>
-                <p className='text-light fs-5 fw-medium'>Dr.Emily Chen</p>
-                <p style={{color:'rgb(167 169 169 / 70%)'}}>Council Session</p>
+                <p className='text-light fs-5 fw-medium'>{`Dr.${showappo?.doctorId?.name}`}</p>
+                <p style={{color:'rgb(167 169 169 / 70%)'}}>{showappo.session}</p>
               </div>
 
               <div className='container text-light text-center p-2  rounded rounded-2'style={{backgroundColor:'rgb(21 128 61 / 15%)'}}>
-              Sep 15,10:00 AM
-              </div>
+              {month} {day},{formattedTime}
+              </div></>:<div className='w-100 d-flex flex-column align-items-center h-100'>
+                <img src={img} className='img-fluid object-fit-contain' style={{height:'200px',width:'200px'}} alt="" />
+               <p className='text-light fs-6 fw-semibold'>Ooops!No active appointments</p>
+             </div>}
+             
+             
+              
 
               </div>
                 
