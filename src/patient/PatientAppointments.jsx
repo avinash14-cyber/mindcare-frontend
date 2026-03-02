@@ -4,7 +4,7 @@ import { faBullseye, faCalendarCheck, faPlus, faStar } from '@fortawesome/free-s
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GiMeditation } from "react-icons/gi";
 import { isExpired } from '../utils/isValidUtil';
-import { appointmentShowApi, bookAppointmentApi, chooseDoctorApi, followUpApi, followUpTimeApi } from '../services/allApi';
+import { appointmentShowApi, bookAppointmentApi, chooseDoctorApi, deleteAppointmentApi, followUpApi, followUpTimeApi } from '../services/allApi';
 import Session from './appointments/Session';
 import DateandTime from './appointments/DateandTime';
 import ChooseDoc from './appointments/ChooseDoc';
@@ -47,6 +47,7 @@ const PatientAppointments = () => {
     doctor:"",
     session:""
   })
+  const[refreshapo,setrefreshapo]=useState(false)
  const [loading, setLoading] = useState(true);
 const [followup,setFollowUp]=useState([])
  
@@ -175,7 +176,8 @@ const handleBooking=async()=>{
   iconColor: "#0dcaf0", 
   confirmButtonColor: "#0dcaf0"
 });
-    }
+setrefreshapo(prev=>!prev)
+  }
     else if(result.status==500){
       Swal.fire({
   title: "Booking failed",
@@ -208,7 +210,7 @@ const handleDoclist=async()=>{
  }
 
  const isMoreThanOne=()=>{
-  const appointmentTime = dayjs(showappo?.date) // e.g. "2026-02-27"
+  const appointmentTime = dayjs(showappo?.date) 
   .hour(Number(showappo?.hour))
   .minute(Number(showappo?.minute))
   .second(0);
@@ -220,34 +222,52 @@ const diffInMinutes = appointmentTime.diff(now, 'minute');
 return diffInMinutes > 60;
  }
 
- const handleDelete=async()=>{
-  if(!isMoreThanOne()){
-    return
-  }else{
-    Swal.fire({
-  title: "Are you sure you want to cancel the appointment?",
- background: "rgb(38, 40, 40)",
- color: "#ffffff",
-  showCancelButton: true,
-  confirmButtonText: "Yes",
-  confirmButtonColor: "#0dcaf0"
-  
-}).then((result) => {
-  if (result.isConfirmed) {
-     Swal.fire({
-  title: "Appointment Deleted",
-  icon: "success",
+ const handleDelete = async () => {
+  if (!isMoreThanOne()) return;
+
+  const swalResult = await Swal.fire({
+    title: "Are you sure you want to cancel the appointment?",
+    background: "rgb(38, 40, 40)",
+    color: "#ffffff",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#0dcaf0"
+  });
+
+  if (swalResult.isConfirmed) {
+    try{
+       const tok=sessionStorage.getItem("Token")
+const reqHeader={
+        "Authorization":`Bearer ${tok}`
+      }  
+    const result=await deleteAppointmentApi({date:showappo?.date,hour:showappo?.hour,minute:showappo?.minute},reqHeader)
+      if(result.status==200){
+        await Swal.fire({
+      title: "Appointment Cancelled",
+      icon: "success",
+      background: "rgb(38, 40, 40)",
+      color: "#ffffff",
+      iconColor: "#0dcaf0",
+      confirmButtonColor: "#0dcaf0"
+    });
+    setrefreshapo(prev=>!prev)
+      }
+      
+    }catch(err){
+      
+        Swal.fire({
+  title: "Failed to delete",
+  icon: "error",
   background: "rgb(38, 40, 40)",
   color: "#ffffff",
-  iconColor: "#0dcaf0", 
+  iconColor: "#be1900", 
   confirmButtonColor: "#0dcaf0"
 });
+      
+    }
     
-  } 
-});
   }
-
- }
+};
 
 useEffect(() => {
   if (
@@ -280,6 +300,7 @@ useEffect(() => {
 
 
 
+
 useEffect(() => {
   if (!appointment.date || !appointment.time) return;
 
@@ -296,9 +317,10 @@ const reqHeader={
   const result=await appointmentShowApi(reqHeader)
   setShowAppo(result.data)
   setLoading(false);
+  
    }
    showAppointment()
-},[])
+},[refreshapo])
 
 const day = dayjs(showappo?.date).format("DD");     
 const month = dayjs(showappo?.date).format("MMM");  

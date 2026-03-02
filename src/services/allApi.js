@@ -104,3 +104,9 @@ export const followUpTimeApi=async(reqBody)=>{
 export const appointmentShowApi=async(reqHeader)=>{
     return await commonAPI("GET",`${serverURL}/show_appointment`,"",reqHeader)
 }
+
+// delete appointment
+
+export const deleteAppointmentApi=async(reqBody,reqHeader)=>{
+    return await commonAPI("POST",`${serverURL}/delete_appoointment`,reqBody,reqHeader)
+}
