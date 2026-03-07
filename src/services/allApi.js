@@ -110,3 +110,10 @@ export const appointmentShowApi=async(reqHeader)=>{
 export const deleteAppointmentApi=async(reqBody,reqHeader)=>{
     return await commonAPI("POST",`${serverURL}/delete_appoointment`,reqBody,reqHeader)
 }
+
+// doctor appointments
+
+export const getDocAppointmentApi=async(reqHeader)=>{
+
+    return await commonAPI("GET",`${serverURL}/doc_appointments`,"",reqHeader)
+}

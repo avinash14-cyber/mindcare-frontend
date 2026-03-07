@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 const FollowupIntro = ({setSession,nextfunc,details,setDoctor}) => {
 
   useEffect(()=>{
-setDoctor({name:details.doctorId.name,id:details.doctorId._id.toString()});
+setDoctor({name:details?.doctorId?.name,id:details?.doctorId?._id.toString()});
   },[])
   const flag=!details||details.status=="BOOKED"
   return (

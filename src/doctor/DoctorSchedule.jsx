@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import DoctorSidebar from './DoctorSidebar'
 import { faClipboard } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { handleDocDeleteTimeApi, handleDocScheduleApi, handleDoctorSlotsApi } from '../services/allApi'
+import { getDocAppointmentApi, handleDocDeleteTimeApi, handleDocScheduleApi, handleDoctorSlotsApi } from '../services/allApi'
 import Swal from 'sweetalert2'
+import dayjs from "dayjs";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+dayjs.extend(isSameOrAfter);
 
 const DoctorSchedule = () => {
-
 
 
   const [selectedSlot, setSelectedSlot] = useState([]);
@@ -17,6 +19,7 @@ const [scheduleData, setScheduleData] = useState({})
   const [availability,setAvailability]=useState({})
   const days=["MO","TU","WE","TH","FR","SA","SU"]
   const [selectedDays, setSelectedDays] = useState([])
+  const[appointment,setAppointment]=useState([])
   const[todayslot,setTodayslot]=useState([])
 const toggleDay = (day) => {
   setSelectedDays(prev =>
@@ -79,16 +82,51 @@ const DAYS=[
   5: "FR",
   6: "SA"
 }
-
-
-const todayKey = dayMap[new Date().getDay()]
-const [daykey, setDayKey] = useState(todayKey)
-const [daylabel,setDayLabel]=useState()
 const token=sessionStorage.getItem('DOCTOK')
 
  const reqHeader={
         "Authorization":`Bearer ${token}`
       }  
+
+const handlePatients=async()=>{
+const token=sessionStorage.getItem('DOCTOK')
+
+ const reqHeader={
+        "Authorization":`Bearer ${token}`
+      }  
+  const result=await getDocAppointmentApi(reqHeader)
+  setAppointment(result.data)
+}
+
+useEffect(()=>{
+handlePatients();
+},[])
+
+const todayKey = dayMap[new Date().getDay()]
+const [daykey, setDayKey] = useState(todayKey)
+const [daylabel,setDayLabel]=useState()
+
+const appointmentMap = useMemo(() => {
+  const map = {};
+
+  appointment.forEach(app => {
+    const dayKey = dayMap[new Date(app?.date).getDay()];
+
+    if (!map[dayKey]) map[dayKey] = [];
+
+    map[dayKey].push({
+      hour: app?.hour,
+      minute: app?.minute,
+      session:app?.session,
+      patientName: app?.patientId?.name
+    });
+  });
+ console.log(map);
+ 
+  return map;
+}, [appointment]);
+
+
 
 const handleAddTime=async()=>{
   const updatedAvailability = { ...availability }
@@ -230,17 +268,51 @@ useEffect(()=>{
              </div>
 
              <div className='container overflow-hidden border rounded-3 border-secondary'>
-             {todayslot.map(item=>(
-              
-              <div onClick={()=>setRemove({label:item.label,Day:daykey})} className={item.label==remove.label?' border-bottom border-secondary row  text-light bg-danger':' border-bottom border-secondary row'} key={item.label}>
+             {todayslot.map(item=>{
+               
+
+              const isBooked = appointmentMap?.[daykey]?.find(
+                app =>
+                  app.hour === item.hour &&
+                  app.minute === item.minute
+              );
+              const now = dayjs();
+
+              const isToday = dayjs(isBooked?.date).isSame(now, "day");
+
+              let canStart = false;
+
+              if (isToday) {
+                const sessionTime = dayjs(isBooked?.date)
+                  .hour(Number(isBooked?.hour))
+                  .minute(Number(isBooked?.minute))
+                  .second(0);
+
+                canStart = now.isSameOrAfter(sessionTime);
+              }
+             return(
+               <div onClick={()=>setRemove({label:item.label,Day:daykey})} className={item.label==remove.label?' border-bottom border-secondary row  text-light bg-danger':' border-bottom border-secondary row'} key={item.label}>
                <div className={item.label==remove.label?'text-light  px-3 py-4 col-1':'text-info  px-3 py-4 col-1'} style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
                 {item.label}
                </div>
-               <div className='col-11 d-flex align-items-center justify-content-center ' style={{backgroundColor:'rgb(50 184 198 / 5%)'}}>
-                 <p className={item.label==remove.label?'text-light':'text-secondary'}>Available</p>
+               <div className='col-11 p-1 d-flex align-items-center justify-content-center ' style={{backgroundColor:'rgb(50 184 198 / 5%)'}}>
+                 {isBooked?<div className='d-flex p-2 flex-column w-75 border border-2 border-primary'>
+                  <div className='w-100 justify-content-between p-2 d-flex flex-row' style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
+                  <p className='text-light fs-4 fw-semibold'>{isBooked?.patientName}</p>
+                  <div className='bg-secondary text-light px-2 rounded-3 h-25'>Booked</div>
+                  </div>
+                  <p className='text-light p-2 mt-1 fs-6 fw-semibold'style={{backgroundColor:'rgb(180 83 9 / 15%)'}}>{isBooked?.session}</p>
+                  <div className='d-flex gap-2 flex-row'>
+                    <p className='p-1 rounded-2 text-info'style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>Confirmed</p>                                       
+                  <p className='p-1 rounded-2 text-info'style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>Ready</p>  
+                  </div>
+
+                  <button disabled={!canStart} className='fs-4 mx-auto p-2 fw-medium rounded-2 border-0 bg-info text'>Start Now</button>
+                 </div>:<p className={item.label==remove.label?'text-light':'text-secondary'}>Available</p>}
                </div>
              </div>
-             ))}
+             )
+})}
 
           
 

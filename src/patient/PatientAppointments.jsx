@@ -122,7 +122,7 @@ const isValid = () => {
     case 3:
       return appointment.doctor;
     case 4:
-      return true;
+      return false;
     default:
       return false;
   }
@@ -234,7 +234,7 @@ return diffInMinutes > 60;
     confirmButtonColor: "#0dcaf0"
   });
 
-  if (swalResult.isConfirmed) {
+  if (swalResult) {
     try{
        const tok=sessionStorage.getItem("Token")
 const reqHeader={
