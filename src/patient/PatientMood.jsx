@@ -32,7 +32,7 @@ const PatientMood = () => {
         "Authorization":`Bearer ${tok}`
       }  
 
-      if(emo.emotion=="" || emo.influence.length==0){
+      if(emo?.emotion=="" || emo?.influence.length==0){
         toast.warning("Please fill the required details")
         return;
       }
@@ -84,7 +84,7 @@ const handleRecentEntries=async()=>{
       }  
 
      const result = await hanldeRecentEntriesApi(reqHeader)
-     setmoodData(result.data)
+     setmoodData(result?.data)
      console.log(moodData);
      
      
@@ -316,7 +316,7 @@ const selectitem=(items)=>{
       Recent Entries
     </h3>
 
-    {moodData.map((mood, index) => (
+    {moodData?.map((mood, index) => (
       <div
         key={index}
         className="container mb-3 rounded-3 px-3 py-2"

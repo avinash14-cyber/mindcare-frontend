@@ -117,10 +117,34 @@ const PatientDashboard = () => {
 ];
 
 
+// const handleBreathingComplete = async () => {
+//   try {
+//     const token = sessionStorage.getItem("Token");
+
+//     const reqHeader = {
+//       Authorization: `Bearer ${token}`
+//     };
+
+    
+
+//     alert("Great job! +5 wellness points");
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
     const startTimer = () => {
     if (timerRef.current !== null) return;
     timerRef.current = setInterval(() => {
-      setSeconds((prev) => (prev > 0 ? prev - 1 : 0)); // countdown
+      setSeconds((prev) =>     {  if (prev <= 1) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+
+        // handleBreathingComplete(); // give points here
+        return 0;
+      }
+     return prev - 1;}
+); // countdown
     }, 1000);
   };
 

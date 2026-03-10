@@ -158,6 +158,7 @@ const handleClose=()=>{
   })
 }
 
+
 const handleBooking=async()=>{
 
   
@@ -177,6 +178,7 @@ const handleBooking=async()=>{
   confirmButtonColor: "#0dcaf0"
 });
 setrefreshapo(prev=>!prev)
+// manageWellness();
   }
     else if(result.status==500){
       Swal.fire({
