@@ -11,10 +11,37 @@ import { faSquareCheck, faTriangleExclamation } from '@fortawesome/free-solid-sv
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react'
 import { DoctorContext } from '../context/DocContext'
-
+import { useEffect } from 'react'
+import { getRiskPatientsApi } from '../services/allApi'
+import { useState } from 'react'
+import img from '../assets/no_appointment.png'
+import dayjs from "dayjs"
 const Doctorportal = () => {
 
+  const[patlist,setPatList]=useState([])
+
   const{doc}=useContext(DoctorContext)
+
+  const handlePatientList=async()=>{
+    const token=sessionStorage.getItem('DOCTOK')
+
+ const reqHeader={
+        "Authorization":`Bearer ${token}`
+      }  
+      const result=await getRiskPatientsApi(reqHeader)
+      setPatList(result?.data)
+      console.log(result);
+      
+  }
+
+  const todayAppointments = patlist?.filter(items =>
+  dayjs(items?.date).isSame(dayjs(), "day")
+)
+  
+
+  useEffect(()=>{
+    handlePatientList()
+  },[])
   return (
     <div className='w-100 min-vh-100'>
        <div className='row w-100'>
@@ -96,14 +123,15 @@ const Doctorportal = () => {
            </div>
 
            <div className='w-100 mt-4 d-flex justify-content-evenly row'>
-               <div className='col-4'style={{minHeight:'500px',background:'linear-gradient(135deg,rgb(185 28 28 / 15%),rgb(8 145 178 / 15%))'}}>
+               <div className='col-4 'style={{height:'300px',background:'linear-gradient(135deg,rgb(185 28 28 / 15%),rgb(8 145 178 / 15%))'}}>
                 <h3 className='text-light fw-medium'>Priority Patients</h3>
-                <div className='d-flex position-relative overflow-hidden risks gap-1 justify-content-around rounded rounded-2 container flex-row'style={{backgroundColor:'rgb(255 84 89 / 5%)'}}>
+                {patlist?.filter(items=>items.wellness<50)?.map(pat=>(
+                    <div key={pat.patientId._id} className='d-flex mt-2 position-relative overflow-hidden risks gap-1 justify-content-around rounded rounded-2 container flex-row'style={{backgroundColor:'rgb(255 84 89 / 5%)'}}>
                   <div className='py-3 px-1 text-light border border-2 border-danger'>
                    MB
                   </div>
                   <div className='d-flex flex-column'>
-                    <p className='text-light mb-0 fw-medium fs-4'>Michael Brown</p>
+                    <p className='text-light mb-0 fw-medium fs-4'>{pat.patientId.name}</p>
                     <p className='text-danger mt-1 mb-1'>High Risk</p>
                     <p className='mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>Last checked in 3d ago</p>
                   </div>
@@ -112,51 +140,62 @@ const Doctorportal = () => {
                     <button type="button" class="btn btn-light">View Profile</button>
                   </div>
                 </div>
+                ))}
+                
 
-                <div className='d-flex mt-3 position-relative overflow-hidden risks gap-1 justify-content-around rounded rounded-2 container flex-row'style={{backgroundColor:'rgb(255 84 89 / 5%)'}}>
-                  <div className='py-3 px-1 text-light border border-2 border-danger'>
-                   CB
-                  </div>
-                  <div className='d-flex flex-column'>
-                    <p className='text-light mb-0 fw-medium fs-4'>Chris Brown</p>
-                    <p className='text-danger mt-1 mb-1'>High Risk</p>
-                    <p className='mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>Last checked in 3d ago</p>
-                  </div>
-                  <div className='d-flex h-100  gap-2 flex-column'>
-                    <button type="button" class="btn btn-danger mt-2">Contact Now</button>
-                    <button type="button" class="btn btn-light">View Profile</button>
-                  </div>
-                </div>
-
-                <div className='d-flex mt-3 position-relative overflow-hidden risks gap-1 justify-content-around rounded rounded-2 container flex-row'style={{backgroundColor:'rgb(255 84 89 / 5%)'}}>
-                  <div className='py-3 px-1 text-light border border-2 border-danger'>
-                   EB
-                  </div>
-                  <div className='d-flex flex-column'>
-                    <p className='text-light mb-0 fw-medium fs-4'>Emily Brown</p>
-                    <p className='text-danger mt-1 mb-1'>High Risk</p>
-                    <p className='mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>Last checked in 3d ago</p>
-                  </div>
-                  <div className='d-flex h-100  gap-2 flex-column'>
-                    <button type="button" class="btn btn-danger mt-2">Contact Now</button>
-                    <button type="button" class="btn btn-light">View Profile</button>
-                  </div>
-                </div>
+               
                </div>
 
-               <div className='col-4' style={{minHeight:'500px',background:'linear-gradient(135deg,rgb(29 78 216 / 15%),rgb(107 33 168 / 15%))'}}>
+               <div className='col-4' style={{height:'300px',background:'linear-gradient(135deg,rgb(29 78 216 / 15%),rgb(107 33 168 / 15%))'}}>
                 <h3 className='text-light fw-medium'>Today's Schedule</h3>
-                <div className='container justify-content-around rounded p-2 dashschedule overflow-hidden position-relative rounded-2 d-flex flex-row'style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
-                  <p className='text-info fw-medium'>10:00 AM</p>
-                  <div className='d-flex flex-column'>
-                   <p className='text-light fw-medium mb-1'>Sarah <br />Johnson</p>
-                   <p className='py-1 px-2 text-light rounded mt-0 mb-1 rounded-2' style={{backgroundColor:'rgb(180 83 9 / 15%)'}}>Council <br />Session#9</p>
-                   <p style={{backgroundColor:'rgb(21 128 61 / 15%)'}} className='py-1 mt-0 px-2 text-light'><FontAwesomeIcon className='text-success' icon={faSquareCheck} />Prep <br />Complete</p>
-                  </div>
-                  <button type="button" class="btn btn-info h-50">Start Session</button>
-                </div>
+                
+                 {todayAppointments?.length > 0 ? (
+  todayAppointments.map(val => (
+    <div
+      key={val.patientId._id}
+      className='container justify-content-around rounded p-2 dashschedule overflow-hidden position-relative rounded-2 d-flex flex-column'
+      style={{ backgroundColor: 'rgb(29 78 216 / 15%)' }}
+    >
+      <div className='w-100 d-flex align-items-center flex-row justify-content-between'>
+        <p className='text-info fw-medium'>
+          {dayjs(val?.date).hour(val?.hour).minute(val?.minute).format("h:mm A")}
+        </p>
 
-                <div className='container mt-2 justify-content-around rounded p-2 dashschedule overflow-hidden position-relative rounded-2 d-flex flex-row'style={{backgroundColor:'rgb(38 40 40)'}}>
+        <p className='text-light fs-4 fw-medium mb-1'>
+          {val?.patientId?.name}
+        </p>
+      </div>
+
+      <div className='d-flex justify-content-around flex-row'>
+        <p
+          className='py-1 px-2 text-light rounded mt-0 mb-1 rounded-2'
+          style={{ backgroundColor: 'rgb(180 83 9 / 15%)' }}
+        >
+          Council <br />{val.session}
+        </p>
+
+        <p
+          style={{ backgroundColor: 'rgb(21 128 61 / 15%)' }}
+          className='py-1 mt-0 px-2 text-light'
+        >
+          <FontAwesomeIcon className='text-success' icon={faSquareCheck} />
+          Prep <br />Complete
+        </p>
+      </div>
+    </div>
+  ))
+) : (
+  <div className='w-100 text-center'>
+    <img src={img} className='img-fluid ' style={{height:'300px',scale:'1.2'}} alt="No appointments today"  />
+    
+  </div>
+)}
+                
+                
+                
+                
+
+                {/* <div className='container mt-2 justify-content-around rounded p-2 dashschedule overflow-hidden position-relative rounded-2 d-flex flex-row'style={{backgroundColor:'rgb(38 40 40)'}}>
                   <p className='text-info fw-medium'>2:00 PM</p>
                   <div className='d-flex flex-column'>
                    <p className='text-light fw-medium mb-1'>Michael  <br />Brown</p>
@@ -164,7 +203,7 @@ const Doctorportal = () => {
                    <p style={{backgroundColor:'rgb(21 128 61 / 15%)'}} className='py-1 mt-0 px-2 text-light'><FontAwesomeIcon icon={faTriangleExclamation} className='text-warning' />Review <br />Crisis notes</p>
                   </div>
                   <button type="button" class="btn h-50 btn-outline-secondary">Prepare</button>
-                </div>
+                </div> */}
                </div>
            </div>
          </div>

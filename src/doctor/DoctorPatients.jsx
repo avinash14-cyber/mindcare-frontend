@@ -25,7 +25,7 @@ const DoctorPatients = () => {
   </ul>
 </div>
 
-<button type="button" class="btn h btn-info">Add Patient</button>
+
 
        </div>
        </div>
@@ -87,17 +87,7 @@ const DoctorPatients = () => {
             </div>
           </div>
           
-          <div className='container-fluid mt-4 p-4 rounded-3' style={{backgroundColor:'rgb(180 83 9 / 15%)'}}>
-             <div className='container p-2 rounded-3' style={{backgroundColor:'rgb(38 40 40)'}}>
-               <p className='mb-0' style={{color:'rgb(167 169 169 / 70%)'}}>2 hours ago</p>
-               <p className='text-light mt-0'>Mood check-in:calm</p>
-             </div>
-
-              <div className='container p-2 mt-3 rounded-3' style={{backgroundColor:'rgb(38 40 40)'}}>
-               <p className='mb-0' style={{color:'rgb(167 169 169 / 70%)'}}>Yesterday</p>
-               <p className='text-light mt-0'>Completed Session</p>
-             </div>
-          </div>
+         
 
           <div className='mt-3 mb-2'>
             <button type="button" class="btn btn-info me-2">Start Session</button>

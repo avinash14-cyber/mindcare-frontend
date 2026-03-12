@@ -117,3 +117,10 @@ export const getDocAppointmentApi=async(reqHeader)=>{
 
     return await commonAPI("GET",`${serverURL}/doc_appointments`,"",reqHeader)
 }
+
+// risk patients
+
+export const getRiskPatientsApi=async(reqHeader)=>{
+    return await commonAPI("GET",`${serverURL}/risk_patients`,"",reqHeader)
+}
+
