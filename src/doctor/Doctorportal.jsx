@@ -210,8 +210,8 @@ const Doctorportal = () => {
     </div>
   ))
 ) : (
-  <div className='w-100 text-center'>
-    <img src={img} className='img-fluid ' style={{height:'300px',scale:'1.2'}} alt="No appointments today"  />
+  <div className='w-100 text-center '>
+    <img src={img} className='img-fluid object-fit-cover   ' style={{height:'280px'}} alt="No appointments today"  />
     
   </div>
 )}

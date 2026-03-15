@@ -17,10 +17,11 @@ import { GoHeartFill } from "react-icons/go";
 import { IoIosCloseCircle } from "react-icons/io";
 import { faCalendarCheck, faHeart, faHouse, faMedal, faMessage, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { PatientContext } from '../context/UserContext';
-import {appointmentShowApi, handleMoodApi} from '../services/allApi'
+import {appointmentShowApi, breathingPointsApi, getLatestMoodApi, getWellnessApi, handleMoodApi} from '../services/allApi'
 import { useNavigate } from 'react-router-dom';
 import img from '../assets/no_appo.png'
 import dayjs from "dayjs";
+import { HiEmojiSad } from 'react-icons/hi';
 
 
 
@@ -35,8 +36,10 @@ const PatientDashboard = () => {
   
   const[quickcheck,setQuickcheck]=useState(false)
   const[guided,setGuided]=useState(false)
+  const[wellness,setWellness]=useState(null)
   const[seconds,setSeconds]=useState(300)
   const[showappo,setShowAppo]=useState([])
+  const[latestmood,setLatestMood]=useState(null)
   const[loader,setLoader]=useState(true)
   const timerRef = useRef(null);
 
@@ -44,6 +47,39 @@ const PatientDashboard = () => {
   const navigate=useNavigate()   
 
   const {patient,setPatient}=useContext(PatientContext)
+
+  const getWellness=async()=>{
+    const tok=sessionStorage.getItem("Token")
+     const reqHeader={
+          "Authorization":`Bearer ${tok}`
+        }
+        const result=await getWellnessApi(reqHeader)
+        console.log(result);
+        
+        setWellness(result?.data?.wellness)
+      }
+  
+  const moodEmojis = {
+    Sad: <BsEmojiFrownFill className="fs-4 text-warning" />,
+    Stressed: <HiEmojiSad className="fs-2 text-warning" />,
+    Anxious: <BsFillEmojiTearFill className="fs-4 text-warning" />,
+    Happy: <FontAwesomeIcon className="fs-4 text-warning" icon={faFaceSmileBeam} />,
+    Calm: <BsFillEmojiSmileFill className="fs-4 text-warning" />,
+    Neutral: <MdEmojiEmotions className="fs-4 text-warning" />
+  };
+      
+const getlatestMood=async()=>{
+  const tok=sessionStorage.getItem("Token")
+    const reqHeader={
+        "Authorization":`Bearer ${tok}`}
+      const result=await getLatestMoodApi(reqHeader)
+      setLatestMood(result?.data)
+}  
+  
+  useEffect(()=>{
+  getlatestMood()
+  getWellness()
+  },[])
 
   const handleEmotion=async(label)=>{
    
@@ -117,21 +153,21 @@ const PatientDashboard = () => {
 ];
 
 
-// const handleBreathingComplete = async () => {
-//   try {
-//     const token = sessionStorage.getItem("Token");
+const handleBreathingComplete = async () => {
+  try {
+    const token = sessionStorage.getItem("Token");
 
-//     const reqHeader = {
-//       Authorization: `Bearer ${token}`
-//     };
+    const reqHeader = {
+      Authorization: `Bearer ${token}`
+    };
+
+  const result=await breathingPointsApi(reqHeader)    
 
     
-
-//     alert("Great job! +5 wellness points");
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
+  } catch (err) {
+    console.log(err);
+  }
+};
 
     const startTimer = () => {
     if (timerRef.current !== null) return;
@@ -140,7 +176,7 @@ const PatientDashboard = () => {
         clearInterval(timerRef.current);
         timerRef.current = null;
 
-        // handleBreathingComplete(); // give points here
+        handleBreathingComplete(); 
         return 0;
       }
      return prev - 1;}
@@ -219,7 +255,7 @@ const diffInHours = totalHours % 24;
 
                <div className='d-flex flex-md-row flex-column align-items-center'>
                  <div className='rounded-circle d-flex flex-column justify-content-center align-items-center mb-md-0 mb-2' style={{height:'80px',width:'80px',backgroundColor:'rgb(50 184 198)'}}>
-                   <p className='text-light fs-4 mb-0 fw-medium'>85</p>
+                   <p className='text-light fs-4 mb-0 fw-medium'>{wellness}</p>
                    <p className='text-light mt-0 '>WELLNESS </p>
                  </div>
                  <button type="button" onClick={()=>setQuickcheck(true)} class="btn ms-3 h-50 btn-info">Quick Check-in <HiSparkles className='fs-4 text-warning' /></button>
@@ -251,10 +287,10 @@ const diffInHours = totalHours % 24;
               <h4 className='text-light mt-2'>Today's Mood</h4>
               <div className='w-100 d-flex align-items-center mt-2 flex-column'>
                 <div id='moodesh' className='border d-flex justify-content-center align-items-center border-3 rounded-circle border-info 'style={{width:'60px',height:'60px',boxShadow:'0px 0px 5px 1px white' }}>
-                <IoMdHappy className="text-warning fs-4" />
+                {moodEmojis[latestmood] || "No mood"}
 
                 </div>
-                <p className='text-info fs-6 mt-2'>Happy</p>
+                <p className='text-info fs-6 mt-2'>{latestmood || 'No mood recorded'}</p>
                 <div className='w-100 text-center'>
                   <button onClick={()=>navigate('/patientmood')} type="button" class="btn btn-outline-secondary  ">Update Mood</button>
                 </div>

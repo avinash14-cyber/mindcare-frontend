@@ -130,3 +130,19 @@ export const totalPateintsApi=async(reqHeader)=>{
     return await commonAPI("GET",`${serverURL}/total_patients`,"",reqHeader)
 }
 
+// get wellness
+
+export const getWellnessApi=async(reqHeader)=>{
+  return await commonAPI("GET",`${serverURL}/wellness_score`,"",reqHeader)
+}
+
+// breathing points
+
+export const breathingPointsApi=async(reqHeader)=>{
+    return await commonAPI("POST",`${serverURL}/breathing_points`,reqHeader)
+}
+
+// get latest mood
+export const getLatestMoodApi=async(reqHeader)=>{
+    return await commonAPI("GET",`${serverURL}/latest_mood`,"",reqHeader)
+}

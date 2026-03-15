@@ -8,8 +8,9 @@ import { BsFillEmojiTearFill } from "react-icons/bs";
 import { BsFillEmojiSmileFill } from "react-icons/bs";
 import { MdEmojiEmotions } from "react-icons/md";
 import { IoSparkles } from "react-icons/io5";
-import { handleMoodDetailsApi, hanldeRecentEntriesApi } from '../services/allApi';
+import { getWellnessApi, handleMoodDetailsApi, hanldeRecentEntriesApi } from '../services/allApi';
 import { ToastContainer,toast } from 'react-toastify'
+import PatientGraph from '../components/PatientGraph';
 
 
 
@@ -18,7 +19,7 @@ import { ToastContainer,toast } from 'react-toastify'
 const PatientMood = () => {
 
   const[moodData,setmoodData]=useState([])
-  
+  const[wellness,setWellness]=useState(null)
   const [emo,setEmo]=useState({
     emotion:"",
     influence:[],
@@ -50,7 +51,7 @@ const PatientMood = () => {
           setCircle(0)
           toast.success("Mood updated successfully")
           handleRecentEntries()
-
+          getWellness()
         }
 
       }
@@ -75,7 +76,7 @@ const moodIconMap = Moods.reduce((acc, mood) => {
   acc[mood.label] = mood.icon
   return acc
 }, {})
-const recentEntries=[]
+
 
 const handleRecentEntries=async()=>{
   const tok=sessionStorage.getItem("Token")
@@ -85,18 +86,28 @@ const handleRecentEntries=async()=>{
 
      const result = await hanldeRecentEntriesApi(reqHeader)
      setmoodData(result?.data)
-     console.log(moodData);
+     
      
      
       
 }
 
-
+const getWellness=async()=>{
+  const tok=sessionStorage.getItem("Token")
+   const reqHeader={
+        "Authorization":`Bearer ${tok}`
+      }
+      const result=await getWellnessApi(reqHeader)
+      console.log(result);
+      
+      setWellness(result?.data?.wellness)
+    }
 
 
 
 useEffect(()=>{
 handleRecentEntries()
+getWellness()
 },[])
 
   const[circle,setCircle]=useState(0)
@@ -295,7 +306,8 @@ const selectitem=(items)=>{
           </div>
 
           <div className='col-md-5 mb-4 col-6 h-50 p-5' style={{backgroundColor:'rgb(38 40 40)'}}>
-           <h1 className='text-light mt-5 mb-5'>GRAPH GOES HERE</h1>
+            <h2 className='text-center text-info'>Your progress</h2>
+           <PatientGraph  score={wellness} />
           </div>
        </div>
 
@@ -349,10 +361,10 @@ const selectitem=(items)=>{
             <p className="text-info mb-0">{mood.emotion}</p>
           </div>
 
-          {/* SPACE BETWEEN EMOTION & INFLUENCERS */}
+         
           <div style={{ width: "20px" }} />
 
-          {/* INFLUENCERS */}
+        
           <div
             className="d-flex flex-wrap gap-2"
             style={{ maxWidth: "360px" }}
@@ -362,7 +374,7 @@ const selectitem=(items)=>{
                 key={i}
                 className="px-2 py-1 rounded-4 text-center"
                 style={{
-                  width: "110px", // 👈 forces 3 per row
+                  width: "110px", 
                   backgroundColor: "rgb(119 124 124 / 15%)",
                   color: "rgb(167 169 169 / 70%)",
                   fontSize: "0.9rem"

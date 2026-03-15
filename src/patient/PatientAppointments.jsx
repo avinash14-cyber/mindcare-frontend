@@ -370,8 +370,8 @@ const formattedTime = dayjs()
              </div>
              <div className='d-flex align-items-center flex-row justify-content-between p-2 w-100' style={{backgroundColor:'rgb(38 40 40)'}}>
               <div className='d-flex align-items-center flex-row gap-3'>
-                <div className='bg-info d-flex align-items-center justify-content-center text-dark h-75 px-4 py-3 fs-4 rounded-circle  fw-medium'>
-                    EC
+                <div className='bg-info d-flex align-items-center justify-content-center text-dark px-3 fs-2 rounded-circle  fw-medium'sty>
+                    {showappo?.doctorId?.name?.split('')[0]}
                 </div>
                 <div className='d-flex flex-column'>
                <h4 className='text-light mb-1'>{`Dr.${showappo?.doctorId?.name}`}</h4>
