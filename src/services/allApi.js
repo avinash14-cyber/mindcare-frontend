@@ -124,3 +124,9 @@ export const getRiskPatientsApi=async(reqHeader)=>{
     return await commonAPI("GET",`${serverURL}/risk_patients`,"",reqHeader)
 }
 
+// total patients
+
+export const totalPateintsApi=async(reqHeader)=>{
+    return await commonAPI("GET",`${serverURL}/total_patients`,"",reqHeader)
+}
+

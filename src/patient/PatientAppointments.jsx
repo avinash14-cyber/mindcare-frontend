@@ -457,10 +457,10 @@ const formattedTime = dayjs()
            
          </div>
          <div className='w-100 d-flex justify-content-between flex-row'>
+         <p className='text-light '>Session type</p>
          <p className='text-light'>Date and time</p>
          <p className='text-light'>Doctors</p>
-         <p className='text-light '>Session type</p>
-         <p className='text-light'>Confirmation</p>
+          <p className='text-light'>Confirmation</p>
          </div>
         
         <div className='w-100 mt-4 d-flex justify-content-between flex-column ' style={{height:'450px'}}>

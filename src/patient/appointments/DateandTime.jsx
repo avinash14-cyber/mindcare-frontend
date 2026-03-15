@@ -40,6 +40,7 @@ const DateandTime = ({date,time,onDateChange,onTimeChange}) => {
               transformOrigin: 'top left',  // or 'center' if you want it centered
               display: 'inline-block',      // ensures scaling applies neatly
             }}> <StaticDatePicker orientation="landscape"
+            value={date ? dayjs(date) : null}
             onChange={(data)=>{
               if(!data) return;
             onDateChange(data.format("YYYY-MM-DD"))

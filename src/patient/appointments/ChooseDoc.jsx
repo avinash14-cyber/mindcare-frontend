@@ -1,6 +1,7 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faStar } from '@fortawesome/free-solid-svg-icons'
+import img from'../../assets/no_dcotors.png'
 const ChooseDoc = ({doctor,setDoctor,availdoc}) => {
   return (
     <>
@@ -28,7 +29,10 @@ const ChooseDoc = ({doctor,setDoctor,availdoc}) => {
                <p className='w-100 text-center text-secondary'>Available</p>
             </div>
             ))
-            ):<p>{availdoc}</p>}
+            ):<div className='w-100 text-center'>
+              <img src={img} className='img-fluid' style={{height:'280px', scale:'1'}} alt="No doctor available" />
+              <p className='text-light fs-5 fw-medium mt-2'>No doctors available for the selected date and time. Please choose a different slot.</p>
+            </div>}
           
 
 

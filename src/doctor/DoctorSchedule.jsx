@@ -6,6 +6,7 @@ import { getDocAppointmentApi, handleDocDeleteTimeApi, handleDocScheduleApi, han
 import Swal from 'sweetalert2'
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import { ToastContainer,toast } from 'react-toastify'
 dayjs.extend(isSameOrAfter);
 
 const DoctorSchedule = () => {
@@ -13,8 +14,8 @@ const DoctorSchedule = () => {
 
   const [selectedSlot, setSelectedSlot] = useState([]);
   const [remove,setRemove]=useState({})
+  const[loading,setLoading]=useState(true)
   
-  const [bookings,setBookings]=useState([])
 const [scheduleData, setScheduleData] = useState({})
   const [availability,setAvailability]=useState({})
   const days=["MO","TU","WE","TH","FR","SA","SU"]
@@ -121,7 +122,6 @@ const appointmentMap = useMemo(() => {
       patientName: app?.patientId?.name
     });
   });
- console.log(map);
  
   return map;
 }, [appointment]);
@@ -162,11 +162,12 @@ if(selectedDays.length==0 || selectedSlot.length==0){
 
 
   const handleRemove=async()=>{
-  if(!remove){
-    alert("please select a time")
+  if(!remove?.label || !remove?.Day){
+    toast.warning("Please select a slot ")
+    return
   }
   
-   const result= await  Swal.fire({
+    const result= await  Swal.fire({
   title: "Are you sure?",
   text: "You won't be able to revert this!",
   color:'white',
@@ -177,12 +178,13 @@ if(selectedDays.length==0 || selectedSlot.length==0){
   cancelButtonColor: 'rgb(52,186,200)',
   confirmButtonText: "Yes, delete it!"
 })
+  
+   
   if (result.isConfirmed) {
 
 
-    const result= await handleDocDeleteTimeApi(remove,reqHeader)
-    console.log(result);
-    console.log(todayslot);
+    const response= await handleDocDeleteTimeApi(remove,reqHeader)
+    
     
    setScheduleData(prev=>({
     ...prev,
@@ -196,6 +198,8 @@ if(selectedDays.length==0 || selectedSlot.length==0){
       icon: "success"
     });
     setRemove({})
+  }else if(result.isDismissed){
+    setRemove({})
   }
 
   
@@ -205,13 +209,17 @@ if(selectedDays.length==0 || selectedSlot.length==0){
 const handleLoad=async()=>{
   const result=await handleDocScheduleApi(reqHeader)
   
-  console.log(result.data);
+  
   setScheduleData(result.data)
   
+  
+  setLoading(false)
 }
-
+console.log(scheduleData);
 useEffect(()=>{
- setTodayslot(scheduleData[daykey] || [])
+ setTodayslot(
+  [...(scheduleData[daykey] || [])].sort((a, b) => a.hour - b.hour)
+);
 },[scheduleData,daykey])
 
 useEffect(()=>{
@@ -219,7 +227,8 @@ useEffect(()=>{
   handleLoad()
 },[])
   
-  
+
+
   return (
     <div className='w-100 min-vh-100'>
         <div className='w-100 row'>
@@ -255,20 +264,26 @@ useEffect(()=>{
                </div>
                  <div className='d-flex flex-row gap-3'>
                   <div className='text-center'>
-                    <p className='mb-0 text-info fs-3'>6</p>
+                    <p className='mb-0 text-info fs-3'>{appointmentMap[daykey]?.length??0}</p>
                     <p className='mt-0 text-secondary'>Appointments</p>
                   </div>
 
 
                    <div className='text-center'>
-                    <p className='mb-0 text-info fs-3'>5h</p>
+                    <p className='mb-0 text-info fs-3'>{`${appointmentMap[daykey]?.length??0} hr`}</p>
                     <p className='mt-0 text-secondary'>Total time</p>
                   </div>
                  </div>
              </div>
 
              <div className='container overflow-hidden border rounded-3 border-secondary'>
-             {todayslot.map(item=>{
+             {loading?(
+  <div className="d-flex justify-content-center mt-5 align-items-center w-100 h-100" >
+    <div className="spinner-border my-auto text-info" role="status" />
+  </div>
+                  ):
+             
+             todayslot.map(item=>{
                
 
               const isBooked = appointmentMap?.[daykey]?.find(
@@ -291,7 +306,11 @@ useEffect(()=>{
                 canStart = now.isSameOrAfter(sessionTime);
               }
              return(
-               <div onClick={()=>setRemove({label:item.label,Day:daykey})} className={item.label==remove.label?' border-bottom border-secondary row  text-light bg-danger':' border-bottom border-secondary row'} key={item.label}>
+               <div onClick={() => {
+  if (!isBooked) {
+    setRemove({ label: item.label, Day: daykey });
+  }
+}} className={item.label==remove.label?' border-bottom border-secondary row  text-light bg-danger':' border-bottom border-secondary row'} key={item.label}>
                <div className={item.label==remove.label?'text-light  px-3 py-4 col-1':'text-info  px-3 py-4 col-1'} style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
                 {item.label}
                </div>
@@ -354,6 +373,7 @@ useEffect(()=>{
     </div>
   </div>
 </div>
+<ToastContainer theme='colored' position='top-center' autoClose={2000}/>
     </div>
   )
 }

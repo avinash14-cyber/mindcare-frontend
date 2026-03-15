@@ -15,11 +15,12 @@ import { useEffect } from 'react'
 import { getRiskPatientsApi } from '../services/allApi'
 import { useState } from 'react'
 import img from '../assets/no_appointment.png'
+import prioimg from '../assets/no_priority.png'
 import dayjs from "dayjs"
 const Doctorportal = () => {
 
   const[patlist,setPatList]=useState([])
-
+   const [loading, setLoading] = useState(true);
   const{doc}=useContext(DoctorContext)
 
   const handlePatientList=async()=>{
@@ -30,14 +31,14 @@ const Doctorportal = () => {
       }  
       const result=await getRiskPatientsApi(reqHeader)
       setPatList(result?.data)
-      console.log(result);
+      setLoading(false)
       
   }
 
   const todayAppointments = patlist?.filter(items =>
   dayjs(items?.date).isSame(dayjs(), "day")
 )
-  
+  const highRiskPatients = patlist?.filter(items => items.wellness < 50);
 
   useEffect(()=>{
     handlePatientList()
@@ -68,7 +69,7 @@ const Doctorportal = () => {
                     <p className='text-info fw-medium'><ImArrowUpRight className='text-primary fs-4' />+2</p>
                 </div>
                 <div className='mt-2'>
-                  <p className='w-100 text-center fw-medium text-info fs-4'>6</p>
+                  <p className='w-100 text-center fw-medium text-info fs-4'>{todayAppointments.length}</p>
                   <p className='text-center mb-0'style={{color:'rgb(167 169 169 / 70%)'}}>Today's Appointments</p>
                   <p className='text-center mt-0'style={{color:'rgb(167 169 169 / 70%)'}}>Next: Sarah Johnson at 10:00 AM</p>
 
@@ -83,9 +84,9 @@ const Doctorportal = () => {
                 </div> 
 
                 <div className='mt-2'>
-                  <p className='w-100 text-center fw-medium text-info fs-4'>45</p>
+                  <p className='w-100 text-center fw-medium text-info fs-4'>{patlist.length}</p>
                   <p className='text-center mb-0'style={{color:'rgb(167 169 169 / 70%)'}}>Total Patients</p>
-                  <p className='text-center mt-0'style={{color:'rgb(167 169 169 / 70%)'}}>2 Needs Attention</p>
+                  
 
                 </div>
             </div>
@@ -123,37 +124,61 @@ const Doctorportal = () => {
            </div>
 
            <div className='w-100 mt-4 d-flex justify-content-evenly row'>
-               <div className='col-4 'style={{height:'300px',background:'linear-gradient(135deg,rgb(185 28 28 / 15%),rgb(8 145 178 / 15%))'}}>
+               <div className='col-4 overflow-y-auto  hide-scrollbar 'style={{height:'300px',background:'linear-gradient(135deg,rgb(185 28 28 / 15%),rgb(8 145 178 / 15%))'}}>
                 <h3 className='text-light fw-medium'>Priority Patients</h3>
-                {patlist?.filter(items=>items.wellness<50)?.map(pat=>(
-                    <div key={pat.patientId._id} className='d-flex mt-2 position-relative overflow-hidden risks gap-1 justify-content-around rounded rounded-2 container flex-row'style={{backgroundColor:'rgb(255 84 89 / 5%)'}}>
-                  <div className='py-3 px-1 text-light border border-2 border-danger'>
-                   MB
-                  </div>
-                  <div className='d-flex flex-column'>
-                    <p className='text-light mb-0 fw-medium fs-4'>{pat.patientId.name}</p>
-                    <p className='text-danger mt-1 mb-1'>High Risk</p>
-                    <p className='mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>Last checked in 3d ago</p>
-                  </div>
-                  <div className='d-flex h-100  gap-2 flex-column'>
-                    <button type="button" class="btn btn-danger mt-2">Contact Now</button>
-                    <button type="button" class="btn btn-light">View Profile</button>
-                  </div>
-                </div>
-                ))}
+                {loading? (
+  <div className="d-flex justify-content-center align-items-center w-100 h-100" >
+    <div className="spinner-border my-auto text-info" role="status" />
+  </div>
+                  ): 
+                
+               highRiskPatients?.length > 0 ? (
+  highRiskPatients.map(pat => (
+    <div key={pat?.patientId?._id} className='d-flex mt-2 position-relative overflow-hidden risks gap-1 justify-content-around rounded rounded-2 container flex-row' style={{backgroundColor:'rgb(255 84 89 / 5%)'}}>
+      
+      <div className='py-3 px-1 text-light border border-2 border-danger'>
+        {pat.patientId.name.split('')[0]}
+      </div>
+
+      <div className='d-flex flex-column'>
+        <p className='text-light mb-0 fw-medium fs-4'>{pat?.patientId?.name}</p>
+        <p className='text-danger mt-1 mb-1'>High Risk</p>
+        <p className='mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>Last checked in 3d ago</p>
+      </div>
+
+      <div className='d-flex h-100 gap-2 flex-column'>
+        <button type="button" className="btn btn-danger mt-2">Contact Now</button>
+        <button type="button" className="btn btn-light">View Profile</button>
+      </div>
+
+    </div>
+  ))
+) : (
+  <div className='w-100 text-center'>
+    <img src={prioimg} className='img-fluid' style={{height:'280px', scale:'1'}} alt="No priority patients" />
+    
+  </div>
+)}
                 
 
                
                </div>
 
-               <div className='col-4' style={{height:'300px',background:'linear-gradient(135deg,rgb(29 78 216 / 15%),rgb(107 33 168 / 15%))'}}>
-                <h3 className='text-light fw-medium'>Today's Schedule</h3>
+               <div className='col-4 overflow-y-auto py-2 hide-scrollbar' style={{height:'300px',background:'linear-gradient(135deg,rgb(29 78 216 / 15%),rgb(107 33 168 / 15%))'}}>
+                <h3 className='text-light fw-medium '>Today's Schedule</h3>
                 
-                 {todayAppointments?.length > 0 ? (
+                 {
+                 loading?(
+  <div className="d-flex justify-content-center align-items-center w-100 h-100" >
+    <div className="spinner-border my-auto text-info" role="status" />
+  </div>
+                  ):
+                 
+                 todayAppointments?.length > 0 ? (
   todayAppointments.map(val => (
     <div
       key={val.patientId._id}
-      className='container justify-content-around rounded p-2 dashschedule overflow-hidden position-relative rounded-2 d-flex flex-column'
+      className='container mt-2 justify-content-around rounded p-2 dashschedule overflow-hidden position-relative rounded-2 d-flex flex-column'
       style={{ backgroundColor: 'rgb(29 78 216 / 15%)' }}
     >
       <div className='w-100 d-flex align-items-center flex-row justify-content-between'>

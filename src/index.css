@@ -299,3 +299,6 @@ content: '';
   cursor: not-allowed;
   pointer-events: none;
 }
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}

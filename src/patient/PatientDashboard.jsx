@@ -186,13 +186,19 @@ const formattedTime = dayjs()
   .hour(Number(showappo?.hour))
   .minute(Number(showappo?.minute))
   .format("hh:mm A");
-  const appointmentDateTime = dayjs(showappo?.date)
+ const appointmentDateTime = dayjs(showappo?.date)
   .hour(Number(showappo?.hour))
   .minute(Number(showappo?.minute))
   .second(0);
+
 const now = dayjs();
-const diffInDays = appointmentDateTime.diff(now, "day");
-const diffInHours = appointmentDateTime.diff(now, "hour") % 24;
+
+let totalHours = appointmentDateTime.diff(now, "hour");
+
+if (totalHours < 0) totalHours = 0;
+
+const diffInDays = Math.floor(totalHours / 24);
+const diffInHours = totalHours % 24;
   return (
     <div className='w-100 min-vh-100'>
         <div className='row m-0 '>
