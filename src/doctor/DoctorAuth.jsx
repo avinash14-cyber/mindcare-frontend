@@ -97,6 +97,9 @@ const handleLogin=async()=>{
       alert("Please enter credentials")
     }
 }
+
+console.log(`this is doc ${doc}`);
+
   return (
         <div className='w-100 min-vh-100 d-flex justify-content-center align-items-center' style={{backgroundImage:"url('/images/generated-image.png')",backgroundRepeat:'no-repeat',backgroundSize:'cover',backgroundPosition:'center'}}>
                 

@@ -9,6 +9,7 @@ import { HiEmojiSad } from 'react-icons/hi'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MdEmojiEmotions } from 'react-icons/md'
 import { faFaceSmileBeam } from '@fortawesome/free-solid-svg-icons'
+import img from'../assets/doctor_patients.png'
 
 const DoctorPatients = () => {
 
@@ -22,6 +23,7 @@ const DoctorPatients = () => {
 };
   const [pat,setPat]=useState([])
   const [filter, setFilter] = useState("All Patients")
+  const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(true);
   useEffect(()=>{
     
@@ -42,11 +44,18 @@ const DoctorPatients = () => {
 
 ,[])
 
-const filteredPatients = pat.filter((p) => {
-  if (filter === "All Patients") return true
-  if (filter === "High risk") return p.wellness <= 40
-  if (filter === "Medium risk") return p.wellness > 40 && p.wellness <= 70
-  if (filter === "Low risk") return p.wellness > 70
+const filteredPatients = pat?.filter((p) => {
+  const riskMatch =
+    filter === "All Patients" ||
+    (filter === "High risk" && p.wellness <= 40) ||
+    (filter === "Medium risk" && p.wellness > 40 && p.wellness <= 70) ||
+    (filter === "Low risk" && p.wellness > 70)
+
+  const searchMatch =
+    searchTerm === "" ||
+    p.patientId.name.toLowerCase().includes(searchTerm.toLowerCase())
+
+  return riskMatch && searchMatch
 })
 
 const getRisk = (wellness) => {
@@ -64,7 +73,7 @@ const getRisk = (wellness) => {
        <div className='w-100 d-flex flex-row p-2 justify-content-between'>
        <h3 className='text-light fw-medium'>Patient Management <IoMdPeople className='text-primary ms-1 fs-3' /></h3>
        <div className='d-flex gap-2 align-items-center flex-row'>
-          <input type="email" class="form-control px-1 h-50 py-4" id="exampleFormControlInput1" placeholder="search patients"/>
+          <input type="email" class="form-control px-1 h-50 py-4" id="exampleFormControlInput1" onChange={(e) => setSearchTerm(e.target.value)} placeholder="search patients"/>
          <div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle py-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
     {filter}
@@ -86,21 +95,21 @@ const getRisk = (wellness) => {
         <div className='py-3 px-4 border doctordash position-relative rounded rounded-2 d-flex flex-column'style={{backgroundColor:'rgb(38 40 40)'}}>
             <GoDotFill className='text-danger fs-2' />
 
-     <p className='text-info fs-3 mb-0 w-100 text-center fw-medium'>{pat.filter(items=>items.wellness<=40).length}</p>
+     <p className='text-info fs-3 mb-0 w-100 text-center fw-medium'>{pat?.filter(items=>items?.wellness<=40)?.length}</p>
      <p style={{color:'rgb(167 169 169 / 70%)'}}>High risk</p>
         </div>
 
          <div className='py-3 px-4 border doctordash position-relative rounded rounded-2 d-flex flex-column'style={{backgroundColor:'rgb(38 40 40)'}}>
             <GoDotFill className=' fs-2'style={{color:'orange'}} />
 
-     <p className='text-info fs-3 mb-0 w-100 text-center fw-medium'>{pat.filter(items=>items.wellness>40 && items.wellness<=70).length}</p>
+     <p className='text-info fs-3 mb-0 w-100 text-center fw-medium'>{pat?.filter(items=>items?.wellness>40 && items?.wellness<=70)?.length}</p>
      <p style={{color:'rgb(167 169 169 / 70%)'}}>Medium risk</p>
         </div>
 
          <div className='py-3 px-4 border doctordash position-relative rounded rounded-2 d-flex flex-column'style={{backgroundColor:'rgb(38 40 40)'}}>
             <GoDotFill className='text-info fs-2' />
 
-     <p className='text-info fs-3 mb-0 w-100 text-center fw-medium'>{pat.filter(items=>items.wellness>70).length}</p>
+     <p className='text-info fs-3 mb-0 w-100 text-center fw-medium'>{pat?.filter(items=>items?.wellness>70)?.length}</p>
      <p style={{color:'rgb(167 169 169 / 70%)'}}>Low risk</p>
         </div>
        </div>
@@ -112,19 +121,19 @@ const getRisk = (wellness) => {
   </div>
                   ):
          
-         filteredPatients.map(items=>{
+         filteredPatients?.length>0?(filteredPatients?.map(items=>{
           const risk = getRisk(items?.wellness)
         return ( <div key={items._id} className='container mt-2 border border-secondary' style={{backgroundColor:'rgb(38 40 40)'}}>
           <div className='w-100 d-flex flex-row justify-content-between p-2'>
            <div className='d-flex flex-column'>
-             <h4 className='text-light fw-medium'>{items.patientId.name}</h4>
+             <h4 className='text-light fw-medium'>{items?.patientId?.name}</h4>
              <p style={{color:'rgb(167 169 169 / 70%)'}}>Age:28</p>
              </div>
           
           <div className='h-50 d-flex flex-column align-items-center justify-content-center p-1 rounded rounded-2' style={{backgroundColor:'rgb(50 184 198 / 10%)'}}>
           
-             <p className={`${risk.color} mb-0 fw-medium`}>
-            {risk.label}
+             <p className={`${risk?.color} mb-0 fw-medium`}>
+            {risk?.label}
           </p>
            
           </div>
@@ -163,7 +172,8 @@ const getRisk = (wellness) => {
             <button type="button" class="btn btn-light">View profile</button>
           </div>
        </div>)
-})}
+})):<div className='w-100 h-70 d-flex justify-content-center align-items-center '>
+  <img src={img} className='img-fluid object-fit-cover h-75' alt="" /></div>}
       </div>
       </div>
      </div>

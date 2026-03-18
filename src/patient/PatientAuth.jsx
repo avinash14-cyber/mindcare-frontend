@@ -31,7 +31,8 @@ const PatientAuth = () => {
       if(email && password){
 
         const result = await handleLoginApi(loginData)
-        console.log(result);
+        console.log(result.data);
+        
         
         if(result.status==200){
           toast.success('login successfull')
@@ -41,7 +42,7 @@ const PatientAuth = () => {
           setTimeout(()=>{
              navigate('/patient',{replace:true})
           },2000)
-          console.log(result.data.token);
+          
           
           
         }

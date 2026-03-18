@@ -146,3 +146,8 @@ export const breathingPointsApi=async(reqHeader)=>{
 export const getLatestMoodApi=async(reqHeader)=>{
     return await commonAPI("GET",`${serverURL}/latest_mood`,"",reqHeader)
 }
+
+// get all id
+export const getAllIdApi=async(reqHeader)=>{
+    return await commonAPI("GET",`${serverURL}/get_all_id`,"",reqHeader)
+}

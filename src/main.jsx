@@ -7,12 +7,13 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import { BrowserRouter } from 'react-router-dom'
 import PatientContext  from './context/UserContext.jsx'
 import DocContext from './context/DocContext.jsx'
+import DocidContext from './context/DocidContext.jsx'
 
 
 createRoot(document.getElementById('root')).render(
   
    <BrowserRouter>
-   <PatientContext> <DocContext><App /></DocContext></PatientContext>
+  <DocidContext> <PatientContext> <DocContext><App /></DocContext></PatientContext></DocidContext>
     </BrowserRouter>
   
 )

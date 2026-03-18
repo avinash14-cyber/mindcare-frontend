@@ -34,7 +34,7 @@ const PatientAppointments = () => {
   { label: "7:00 PM", hour: 19, minute: 0 },
   { label: "8:00 PM", hour: 20, minute: 0 },
   { label: "9:00 PM", hour: 21, minute: 0 },
-  // { label: "10:00 PM", hour: 22, minute: 0 }
+  
 ]
 
   
@@ -159,6 +159,7 @@ const handleClose=()=>{
 }
 
 
+
 const handleBooking=async()=>{
 
   
@@ -178,7 +179,8 @@ const handleBooking=async()=>{
   confirmButtonColor: "#0dcaf0"
 });
 setrefreshapo(prev=>!prev)
-// manageWellness();
+sessionStorage.setItem("docid",appointment?.doctor?.id)
+
   }
     else if(result.status==500){
       Swal.fire({
@@ -210,7 +212,7 @@ const handleDoclist=async()=>{
   
   setAvailableDocs(result?.data)
  }
-console.log(`available docs ${availableDocs}`);
+
 
  const isMoreThanOne=()=>{
   const appointmentTime = dayjs(showappo?.date) 
@@ -254,6 +256,7 @@ const reqHeader={
       confirmButtonColor: "#0dcaf0"
     });
     setrefreshapo(prev=>!prev)
+    sessionStorage.removeItem("docid")
       }
       
     }catch(err){

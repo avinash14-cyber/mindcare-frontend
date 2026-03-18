@@ -1,7 +1,84 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import DoctorSidebar from './DoctorSidebar'
 import { MdMessage } from "react-icons/md";
+import { PatientContext } from '../context/UserContext';
+import { DocidVal } from '../context/DocidContext';
+import {socket} from '../socket/socket'
+import { DoctorContext } from '../context/DocContext';
+import { getAllIdApi } from '../services/allApi';
 const DoctorMessage = () => {
+   
+   const{doc}=useContext(DoctorContext)
+      const [messages, setMessages] = useState([])
+   const [text, setText] = useState("")
+   const[queue,setQueue]=useState([])
+
+   const patientid=queue[0]?.patientId._id
+
+   const chatId = `${doc?.id}_${patientid}`
+   
+   useEffect(() => {
+   
+     socket.emit("join_chat", chatId)
+   
+   }, [chatId])
+
+   useEffect(() => {
+      fetchId()
+   },[])
+
+   const fetchId=async()=>{
+      try{
+
+         const token=sessionStorage.getItem('DOCTOK')
+
+ const reqHeader={
+        "Authorization":`Bearer ${token}`
+      } 
+         const result=await getAllIdApi(reqHeader)
+         if(result.status==200){
+            setQueue(result?.data)
+         }
+
+      }catch(err){
+
+      }
+   }
+   
+   useEffect(() => {
+   
+     socket.on("receive_message", (data) => {
+       setMessages(prev => [...prev, data])
+     })
+   
+     return () => {
+       socket.off("receive_message")
+     }
+   
+   }, [])
+
+   const sendMessage = () => {
+   
+     if (!text.trim()) return
+   
+     const messageData = {
+       chatId: chatId,
+       sender: "doctor",
+       message: text,
+       time: new Date().toLocaleTimeString()
+     }
+   
+     socket.emit("send_message", messageData)
+   
+    
+   
+     setText("")
+   }
+   console.log(`doctor id ${doc?.id}`);
+   console.log(queue);
+   
+   
+   
   return (
     <div className='w-100 min-vh-100'>
         <div className='row w-100'>
@@ -29,29 +106,58 @@ const DoctorMessage = () => {
             </div>
            
             <div className='w-100 p-4'style={{backgroundColor:'rgb(38 40 40)'}}>
-                <div className='w-100 d-flex flex-column'>
+                  {messages?.map((msg, index) => (
+
+    <div key={index} className="mb-3">
+
+      {msg?.sender === "doctor" ? (
+
+        <div className='w-100 d-flex align-items-end flex-column'>
+          <p className='p-2 bg-info rounded text-dark w-75'>
+            {msg?.message}
+          </p>
+        </div>
+
+      ) : (
+
+        <div className='w-100'>
+          <p
+            className='p-2 rounded text-light w-75'
+            style={{backgroundColor:'rgb(180 83 9 / 15%)'}}
+          >
+            {msg?.message}
+          </p>
+        </div>
+
+      )}
+
+    </div>
+
+  ))}
+
+                {/* <div className='w-100 d-flex flex-column'>
                  <div className='w-75 d-flex flex-row justify-content-between'>
                     <p className='text-light'>Dr.Emily chen</p>
                     <p style={{color:'rgb(167 169 169 / 70%)'}}>Today 2:30 PM</p>
                  </div>
                  <p style={{backgroundColor:'rgb(180 83 9 / 15%)'}} className='p-2 rounded rounded-2 text-light w-75'>Hi Sarah, I wanted to follow up on our last session. How have you been feeling since we discussed the new coping strategies?</p>
                  <p style={{color:'rgb(167 169 169 / 70%)'}}><i>Your mood that day:</i>Calm</p>
-                </div>
+                </div> */}
 
 
-                 <div className='w-100 d-flex align-items-end flex-column'>
+                 {/* <div className='w-100 d-flex align-items-end flex-column'>
                  <div className='w-75 d-flex flex-row justify-content-between'>
                     <p style={{color:'rgb(167 169 169 / 70%)'}}>Today 3:15 PM</p>
                     <p className='text-light'>Dr.Emily chen</p>
                      </div>
                  <p  className='p-2 bg-info rounded rounded-2 text-dark w-75'>Hi Sarah, I wanted to follow up on our last session. How have you been feeling since we discussed the new coping strategies?</p>
                  
-                </div>
+                </div> */}
             </div>
 
             <div className='w-100 p-3 border'>
-               <textarea class="form-control border border-secondary" rows={4} placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-               <button className='p-2 bg-info text-dark fw-bold rounded mt-2'>Send Message</button>
+               <textarea value={text} onChange={(e) => setText(e.target.value)}  class="form-control border border-secondary" rows={4} placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+               <button onClick={sendMessage} className='p-2 bg-info text-dark fw-bold rounded mt-2'>Send Message</button>
             </div>
              
            </div>

@@ -69,7 +69,7 @@ const Doctorportal = () => {
                     <p className='text-info fw-medium'><ImArrowUpRight className='text-primary fs-4' />+2</p>
                 </div>
                 <div className='mt-2'>
-                  <p className='w-100 text-center fw-medium text-info fs-4'>{todayAppointments.length}</p>
+                  <p className='w-100 text-center fw-medium text-info fs-4'>{todayAppointments?.length}</p>
                   <p className='text-center mb-0'style={{color:'rgb(167 169 169 / 70%)'}}>Today's Appointments</p>
                   <p className='text-center mt-0'style={{color:'rgb(167 169 169 / 70%)'}}>Next: Sarah Johnson at 10:00 AM</p>
 
@@ -84,7 +84,7 @@ const Doctorportal = () => {
                 </div> 
 
                 <div className='mt-2'>
-                  <p className='w-100 text-center fw-medium text-info fs-4'>{patlist.length}</p>
+                  <p className='w-100 text-center fw-medium text-info fs-4'>{patlist?.length}</p>
                   <p className='text-center mb-0'style={{color:'rgb(167 169 169 / 70%)'}}>Total Patients</p>
                   
 

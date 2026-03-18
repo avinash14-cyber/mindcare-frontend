@@ -46,8 +46,8 @@ const handleLogout=()=>{
          </div>
          <p className='mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>Clinical Psychologist</p>
          <div className='w-75 p-3 rounded rounded-3 d-flex flex-row ' style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
-        <div className='fw-medium rounded-circle d-flex justify-content-center align-items-center' style={{width:'50px',height:'50px',backgroundColor:'rgb(112, 183, 197)'}}>{doc.name.split('')[0]}</div>
-        <p className='text-light fs-5 ms-3 fw-medium'>{`Dr ${doc.name}`}</p>
+          <div className='fw-medium rounded-circle d-flex justify-content-center align-items-center' style={{width:'50px',height:'50px',backgroundColor:'rgb(112, 183, 197)'}}>{doc?.name?.split('')[0]}</div>
+        <p className='text-light fs-5 ms-3 fw-medium'>{`Dr ${doc?.name}`}</p>
          </div>
          <hr className='border w-75' />
     </div>
