@@ -3,7 +3,6 @@ import PatientSidebar from './PatientSidebar'
 import { MdOutlineWavingHand } from "react-icons/md";
 import { HiSparkles } from "react-icons/hi2";
 import { AiFillFire } from "react-icons/ai";
-import { IoMdHappy } from "react-icons/io";
 import { GiMeditation } from "react-icons/gi";
 import { faBars, faBed, faCircleXmark, faFaceSmileBeam, faS } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,7 +14,6 @@ import { BsFillEmojiTearFill } from "react-icons/bs";
 import { BsEmojiExpressionlessFill } from "react-icons/bs";
 import { GoHeartFill } from "react-icons/go";
 import { IoIosCloseCircle } from "react-icons/io";
-import { faCalendarCheck, faHeart, faHouse, faMedal, faMessage, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { PatientContext } from '../context/UserContext';
 import {appointmentShowApi, breathingPointsApi, getLatestMoodApi, getWellnessApi, handleMoodApi} from '../services/allApi'
 import { useNavigate } from 'react-router-dom';
@@ -211,6 +209,7 @@ const reqHeader={
   const result=await appointmentShowApi(reqHeader)
   setShowAppo(result.data)
   setLoader(false)
+  sessionStorage.setItem("docid",result?.data?.doctorId?._id.toString())
    }
    showAppointment()
 },[])

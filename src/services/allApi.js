@@ -151,3 +151,24 @@ export const getLatestMoodApi=async(reqHeader)=>{
 export const getAllIdApi=async(reqHeader)=>{
     return await commonAPI("GET",`${serverURL}/get_all_id`,"",reqHeader)
 }
+
+// get time slot
+export const getTimeSlotApi=async(reqHeader)=>{
+    return await commonAPI("GET",`${serverURL}/get_time_slot`,"",reqHeader)
+}
+
+// end session
+export const endSessionApi=async(reqHeader)=>{
+    return await commonAPI("PATCH",`${serverURL}/end_session`,"",reqHeader)
+}
+
+// get chat history
+export const getChatHistoryApi=async(chatId,reqHeader)=>{
+    return await commonAPI("GET",`${serverURL}/messages/${chatId}`,"",reqHeader)
+}
+
+// chat for doc
+
+export const getDocChatHistoryApi=async(chatId,reqHeader)=>{
+    return await commonAPI("GET",`${serverURL}/doc_messages/${chatId}`,"",reqHeader)
+}

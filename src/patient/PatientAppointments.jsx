@@ -179,7 +179,7 @@ const handleBooking=async()=>{
   confirmButtonColor: "#0dcaf0"
 });
 setrefreshapo(prev=>!prev)
-sessionStorage.setItem("docid",appointment?.doctor?.id)
+
 
   }
     else if(result.status==500){
