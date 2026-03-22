@@ -15,9 +15,10 @@ const PatientMessage = () => {
 const docid = sessionStorage.getItem("docid")
    const [messages, setMessages] = useState([])
    const[appointment,setAppointment]=useState({})
-   const[chatapprove,setChatApprove]=useState(false)
+   const[chatapprove,setChatApprove]=useState(true)
    const [timeLeft, setTimeLeft] = useState("")
    const[loading,setLoading]=useState(true)
+   const [isOnline, setIsOnline] = useState(false)
 const [text, setText] = useState("")
 
 
@@ -29,6 +30,24 @@ useEffect(() => {
   socket.emit("join_chat", chatId)
 
 }, [chatId])
+
+useEffect(() => {
+  if (patient?.id) {
+    socket.emit("user_online", patient?.id)
+  }
+}, [patient])
+
+useEffect(() => {
+  const handler = ({ userId, status }) => {
+    if (userId === docid) {
+      setIsOnline(status === "online")
+    }
+  }
+
+  socket.on("user_status", handler)
+
+  return () => socket.off("user_status", handler)
+}, [docid])
 
 useEffect(() => {
 
@@ -63,6 +82,24 @@ useEffect(() => {
 
 }, [chatId])
 
+useEffect(() => {
+  if (docid) {
+    socket.emit("check_online", docid)
+  }
+}, [docid])
+
+useEffect(() => {
+  const handleSessionEnd = () => {
+    setChatApprove(false)  
+    setMessages([])         
+
+    // alert("Session ended by doctor")
+  }
+
+  socket.on("session_ended", handleSessionEnd)
+
+  return () => socket.off("session_ended", handleSessionEnd)
+}, [chatapprove])
 
 const sendMessage = () => {
 
@@ -95,6 +132,9 @@ const fetchTime=async()=>{
       const result=await getTimeSlotApi(reqHeader)
       setAppointment(result?.data)
       setLoading(false)
+      if(!result?.data){
+        setChatApprove(false)
+      }
   } catch (error) {
     
   }
@@ -102,29 +142,29 @@ const fetchTime=async()=>{
       
 }
 
-const handleEndSession = async () => {
-  try {
+// const handleEndSession = async () => {
+//   try {
 
-    const tok=sessionStorage.getItem("Token")
-   const reqHeader={
-        "Authorization":`Bearer ${tok}`
-      }  
+//     const tok=sessionStorage.getItem("Token")
+//    const reqHeader={
+//         "Authorization":`Bearer ${tok}`
+//       }  
     
-    await endSessionApi(reqHeader)
+//     await endSessionApi(reqHeader)
 
-    setChatApprove(false)
-
-    
-    socket.emit("leaveRoom", chatId)
+//     setChatApprove(false)
 
     
-    fetchTime()
+//     socket.emit("leaveRoom", chatId)
+
+    
+//     fetchTime()
     
 
-  } catch (err) {
-    console.log(err)
-  }
-}
+//   } catch (err) {
+//     console.log(err)
+//   }
+// }
 
 useEffect(() => {
   if (!appointment) return
@@ -165,7 +205,7 @@ const start=dayjs(appointment?.date)
   const interval = setInterval(() => {
     const now = dayjs()
 
-    const diff = end.diff(now) // milliseconds
+    const diff = end.diff(now) 
 
     if (diff <= 0) {
       clearInterval(interval)
@@ -187,7 +227,7 @@ const start=dayjs(appointment?.date)
 
 useEffect(() => {
   fetchTime()
-},[])
+},[isOnline])
 
   return (
     <div className=' min-vh-100'>
@@ -220,8 +260,8 @@ useEffect(() => {
                     {appointment?.doctorId?.name?.charAt(0)?.toUpperCase()}
                  </div>
                  <div className='d-flex flex-column'>
-                 <p className='mb-0 text-light fw-medium fs-4'>Dr {appointment.doctorId.name}</p>
-                 <p className='mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>Online now</p>
+                 <p className='mb-0 text-light fw-medium fs-4'>Dr {appointment?.doctorId?.name}</p>
+                 <p className='mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>{isOnline ? "Online now" : "Offline"}</p>
                  </div>
                </div>
                 <div className='d-flex justify-content-center  flex-row gap-2'>
@@ -230,7 +270,7 @@ useEffect(() => {
 
                 </div>
 
-               <button onClick={handleEndSession} type="button" class="btn btn-danger h-50">End Session</button>
+               {/* <button onClick={handleEndSession} type="button" class="btn btn-danger h-50">End Session</button> */}
               
             </div>
            
@@ -244,17 +284,19 @@ useEffect(() => {
       {msg?.senderId?.toString() === patient.id ? (
 
         <div className='w-100 d-flex align-items-end flex-column'>
-          <p className='p-2 bg-info rounded text-dark w-75'>
+          <p className='p-2 bg-info rounded text-dark ' style={{ maxWidth: '70%',
+    wordWrap: 'break-word'}}>
             {msg?.text}
           </p>
         </div>
 
       ) : (
 
-        <div className='w-100'>
+        <div className='w-100 d-flex justify-content-start'>
           <p
-            className='p-2 rounded text-light w-75'
-            style={{backgroundColor:'rgb(180 83 9 / 15%)'}}
+            className='p-2 rounded text-light bg-secondary '
+            style={{ maxWidth: '70%',
+    wordWrap: 'break-word'}}
           >
             {msg?.text}
           </p>

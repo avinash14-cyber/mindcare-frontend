@@ -158,8 +158,8 @@ export const getTimeSlotApi=async(reqHeader)=>{
 }
 
 // end session
-export const endSessionApi=async(reqHeader)=>{
-    return await commonAPI("PATCH",`${serverURL}/end_session`,"",reqHeader)
+export const endSessionApi=async(patientid,reqHeader)=>{
+    return await commonAPI("PATCH",`${serverURL}/end_session/${patientid}`,"",reqHeader)
 }
 
 // get chat history
