@@ -10,11 +10,11 @@ const Confirmation = ({booked,bookFunc}) => {
 );
   return (
     <>
-         <div className='d-flex flex-column justify-content-center align-items-center'>
+         <div className='d-flex  flex-column justify-content-center align-items-center'>
          
 
 
-          <div className='d-flex flex-column py-4 px-2 rounded-3 mt-4 justify-content-center align-items-center border border-2 border-info' style={{width:'430px'}}>
+          <div className='d-flex flex-column py-4 px-2 rounded-3 mt-4 justify-content-center align-items-center border border-2 border-info' style={{maxWidth:'430px'}}>
              <SiTicktick className='text-info fs-1' />  
           <p className='text-light fs-4 fw-medium'>Jon,we've set your appointment <br />click confirm appointment below</p>
 

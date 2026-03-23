@@ -302,3 +302,15 @@ content: '';
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+
+/* .responsive-text {
+  white-space: nowrap;
+} */
+
+@media (max-width: 576px) {
+  .responsive-text {
+    white-space: normal;
+    word-break: break-word;
+  }
+}

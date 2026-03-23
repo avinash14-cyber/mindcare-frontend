@@ -31,26 +31,37 @@ const DateandTime = ({date,time,onDateChange,onTimeChange}) => {
   return (
      <>
         <h3 className='text-light text-center w-100'>Select your Slot</h3>
-        <div className='d-flex w-100 flex-row'>
+        <div className='d-flex w-100 flex-md-row flex-column justify-content-center align-items-center mt-4'>
            <div>
              <LocalizationProvider dateAdapter={AdapterDayjs}>
-         <Box  sx={{
-              mt:4,
-              transform: 'scale(0.9)',      // adjust size (0.8 = 80%)
-              transformOrigin: 'top left',  // or 'center' if you want it centered
-              display: 'inline-block',      // ensures scaling applies neatly
-            }}> <StaticDatePicker orientation="landscape"
-            value={date ? dayjs(date) : null}
-            onChange={(data)=>{
-              if(!data) return;
-            onDateChange(data.format("YYYY-MM-DD"))
-            }}
-            disablePast
-  minDate={dayjs()}
-  maxDate={dayjs().add(7, "day")} /></Box>
+        <Box
+  sx={{
+    mt: 2,
+    width: {
+      xs: "100%",
+      sm: "100%",
+      md: 400
+    },
+    maxWidth: "100%",
+    display: "flex",
+    justifyContent: "center"
+  }}
+>
+  <StaticDatePicker
+    orientation="portrait"   // 👈 important for mobile
+    value={date ? dayjs(date) : null}
+    onChange={(data) => {
+      if (!data) return;
+      onDateChange(data.format("YYYY-MM-DD"));
+    }}
+    disablePast
+    minDate={dayjs()}
+    maxDate={dayjs().add(7, "day")}
+  />
+</Box>
         </LocalizationProvider>
            </div>
-      <div className='row w-50  h-75  mt-5 p-4 gap-2'>
+      <div className='row w-md-50 w-100 justify-content-center h-75  mt-5 p-4 gap-2'>
       
        {slots.map(item=>{
          const expired=isExpired(item,date)

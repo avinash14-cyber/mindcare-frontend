@@ -6,11 +6,11 @@ const ChooseDoc = ({doctor,setDoctor,availdoc}) => {
   return (
     <>
           <h3 className='text-light text-center w-100 mb-0'>Choose your doctor</h3>
-          <div className='gap-3 row p-4 d-flex justify-content-evenly align-items-start h-100 overflow-y-auto ' style={{maxHeight:'465px'}}>
+          <div className='gap-3 row flex-md-row flex-column p-4 d-flex justify-content-evenly align-items-start h-100 overflow-y-auto ' style={{maxHeight:'465px'}}>
            
             {Array.isArray(availdoc)?(
               availdoc?.map(item=>(
-               <div key={item._id} onClick={()=>setDoctor({name:item?.name,id:item?._id?.toString()})} className={doctor.id==item?._id?.toString()?"border border-2 border-info col-5 rounded-3":"col-5 rounded-3"} style={{backgroundColor:'rgb(31, 33, 33)'}}>
+               <div key={item._id} onClick={()=>setDoctor({name:item?.name,id:item?._id?.toString()})} className={doctor.id==item?._id?.toString()?"border border-2 border-info col-md-5 col-12 rounded-3":"col-md-5 col-12 rounded-3"} style={{backgroundColor:'rgb(31, 33, 33)'}}>
                <div className='w-100 d-flex flex-row'>
                  <div className='bg-info fw-medium fs-4 text-dark px-3 mt-2 mb-2 d-flex justify-content-center align-items-center  rounded-circle'>
                   EC

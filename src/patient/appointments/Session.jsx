@@ -6,7 +6,7 @@ const Session = ({session,setSession}) => {
   return (
      <div>
                <h3 className='text-light text-center w-100 '>Session type</h3>
-               <div className='d-flex flex-row w-100  mt-5   justify-content-around align-items-center '>
+               <div className='d-flex flex-md-row flex-column  w-100  mt-md-5 gap-3  justify-content-around align-items-center '>
                 <div onClick={()=>setSession("New Session")} className={`${session=="New Session"&&"bg-info"} d-flex flex-column justify-content-center border border-2 border-secondary py-3 px-5 rounded-3 align-items-center`} style={{cursor:'pointer'}}>
                   <h3 className={`${session=="New Session"?"text-dark":"text-light"} fw-medium`}>New Session</h3>
                   <GoPersonFill className={`${session=="New Session"&&"text-dark"} text-info`} style={{fontSize:'7.5rem'}} />

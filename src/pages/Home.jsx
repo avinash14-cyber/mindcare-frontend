@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from '../components/Header'
-import { faCamera, faChartSimple, faE, faFaceSmile, faGamepad, faLock, faM, faMedal, faRocket, faS, faStar, faTrophy, faUserDoctor } from '@fortawesome/free-solid-svg-icons'
+import { faCamera, faChartSimple, faE, faFaceSmile, faGamepad, faLeaf, faLock, faM, faMedal, faRocket, faS, faStar, faTrophy, faUserDoctor } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PiSirenBold } from "react-icons/pi";
 import { MdOutlineSos } from "react-icons/md";
@@ -8,7 +8,8 @@ import { IoBarChartSharp } from "react-icons/io5";
 import { LuBrain } from "react-icons/lu";
 import { faFacebookF, faInstagram, faLinkedin, faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import { Link } from 'react-router-dom';
-
+import img1 from '../assets/home_img1.jpg'
+import img2 from '../assets/home_img2.jpg'
 
 
 
@@ -121,6 +122,75 @@ Track your mood patterns, therapy progress, and wellness metrics with beautiful 
     <div className='container text-center p-1 rounded rounded-2' style={{backgroundColor:'rgb(29 78 216 / 15%)',color:'rgb(50 184 198)'}}>
 <PiSirenBold className='me-2 text-danger' />Help Available</div></div>
  </div>
+    </div>
+
+
+    <div
+      className="container-fluid h-100 py-5"
+      style={{ background:'linear-gradient(to bottom right,#1e2939,#203530,#242a30)' }}
+    >
+      <div className="container">
+        <div className="row align-items-center">
+          
+          {/* LEFT CONTENT */}
+          <div className="col-lg-6 text-white">
+            <p className="mb-2 fs-4" style={{ opacity: 0.8 }}>
+              Guiding you toward mental clarity and
+            </p>
+
+            <h1 className="display-1 fw-bold">Peace</h1>
+
+            <p className="mt-3 fs-5" style={{ maxWidth: "500px", opacity: 0.9 }}>
+              We are committed to providing compassionate, confidential, and
+              professional mental health care tailored to your unique needs.
+            </p>
+
+            {/* FEATURES */}
+            <div className="row mt-4">
+              <div className="col-6 fs-4 mb-2"><FontAwesomeIcon icon={faLeaf} /> Empathy</div>
+              <div className="col-6 fs-4 mb-2"><FontAwesomeIcon icon={faLeaf} /> Excellence</div>
+              <div className="col-6 fs-4 mb-2"><FontAwesomeIcon icon={faLeaf} /> Integrity</div>
+              <div className="col-6 fs-4 mb-2"><FontAwesomeIcon icon={faLeaf} /> Growth</div>
+            </div>
+
+          </div>
+
+          {/* RIGHT IMAGES */}
+          <div className="col-lg-6 d-flex justify-content-center gap-3 mt-5 mt-lg-0">
+            
+            {/* BIG IMAGE */}
+            <div>
+              <img
+                src={img1}
+                alt="meditation"
+                className="img-fluid"
+                style={{
+                  width: "300px",
+                  height: "400px",
+                  objectFit: "cover",
+                  borderRadius: "20px",
+                }}
+              />
+            </div>
+
+            {/* SMALL IMAGE */}
+            <div className="d-flex align-items-center">
+              <img
+                src={img2}
+                alt="peace"
+                className="img-fluid"
+                style={{
+                  width: "180px",
+                  height: "250px",
+                  objectFit: "cover",
+                  borderRadius: "20px",
+                }}
+              />
+            </div>
+
+          </div>
+        </div>
+      </div>
     </div>
 
 

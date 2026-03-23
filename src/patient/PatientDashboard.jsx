@@ -254,10 +254,10 @@ const diffInHours = totalHours % 24;
 
                <div className='d-flex flex-md-row flex-column align-items-center'>
                  <div className='rounded-circle d-flex flex-column justify-content-center align-items-center mb-md-0 mb-2' style={{height:'80px',width:'80px',backgroundColor:'rgb(50 184 198)'}}>
-                   <p className='text-light fs-4 mb-0 fw-medium'>{wellness}</p>
-                   <p className='text-light mt-0 '>WELLNESS </p>
+                   <p className='text-light fs-md-4 fs-5 mb-0 fw-medium'>{wellness}</p>
+                   <p className='text-light mt-0  '>WELLNESS </p>
                  </div>
-                 <button type="button" onClick={()=>setQuickcheck(true)} class="btn ms-3 h-50 btn-info">Quick Check-in <HiSparkles className='fs-4 text-warning' /></button>
+                 <button type="button" onClick={()=>setQuickcheck(true)} class="btn ms-3 h-50 btn-info">Quick Check-in <HiSparkles className='fs-md-4 fs-5 text-warning' /></button>
                </div>
             </div>
 

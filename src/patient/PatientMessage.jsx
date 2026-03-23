@@ -6,7 +6,7 @@ import { PatientContext } from '../context/UserContext';
 import { endSessionApi, getChatHistoryApi, getTimeSlotApi } from '../services/allApi';
 import next_appo from '../assets/next_appointment.png'
 import { FaRegClock } from "react-icons/fa";
-
+import { ToastContainer,toast } from 'react-toastify'
 import dayjs from "dayjs";
 
 const PatientMessage = () => {
@@ -15,7 +15,7 @@ const PatientMessage = () => {
 const docid = sessionStorage.getItem("docid")
    const [messages, setMessages] = useState([])
    const[appointment,setAppointment]=useState({})
-   const[chatapprove,setChatApprove]=useState(true)
+   const[chatapprove,setChatApprove]=useState(false)
    const [timeLeft, setTimeLeft] = useState("")
    const[loading,setLoading]=useState(true)
    const [isOnline, setIsOnline] = useState(false)
@@ -90,16 +90,17 @@ useEffect(() => {
 
 useEffect(() => {
   const handleSessionEnd = () => {
+    
     setChatApprove(false)  
     setMessages([])         
-
-    // alert("Session ended by doctor")
+    toast.info("Doctor has ended the session")
+    fetchTime()
   }
 
   socket.on("session_ended", handleSessionEnd)
 
   return () => socket.off("session_ended", handleSessionEnd)
-}, [chatapprove])
+}, [])
 
 const sendMessage = () => {
 
@@ -236,11 +237,11 @@ useEffect(() => {
                    <PatientSidebar/>
                 </div>
             
-          <div className='col-9'style={{backgroundColor:'rgb(31, 33, 33)'}}>
+          <div className='col-md-9 min-vh-100 col-12'style={{backgroundColor:'rgb(31, 33, 33)'}}>
            {/* heading */}
            <div className='d-flex w-100 p-2 mt-3 flex-row justify-content-between'>
             <h2 className='text-light'>Message <MdMessage className='text-light' /> </h2>
-            <button type="button" class="btn btn-info">New Message</button>
+           
            </div>
 
 
@@ -254,8 +255,8 @@ useEffect(() => {
           </div>
         ) : chatapprove ? (  
           <div className='container border border-secondary border-rounded rounded-3 p-0 d-flex flex-column'>
-            <div className='w-100 m-0 border border-secondary border-rounded rounded-3 d-flex p-3 flex-row align-items-center justify-content-between'style={{backgroundColor:'rgb(38 40 40)'}}>
-               <div className='d-flex flex-row  gap-2'>
+            <div className='w-100 overflow-hidden m-0 border border-secondary border-rounded rounded-3 d-flex p-3 flex-row align-items-center justify-content-between'style={{backgroundColor:'rgb(38 40 40)'}}>
+               <div className='d-flex  flex-row  gap-2'>
                  <div className='bg-info d-flex align-items-center justify-content-center fs-4 rounded-circle h-75 py-2 px-3 '>
                     {appointment?.doctorId?.name?.charAt(0)?.toUpperCase()}
                  </div>
@@ -274,7 +275,7 @@ useEffect(() => {
               
             </div>
            
-            <div className='w-100 p-4'style={{backgroundColor:'rgb(38 40 40)'}}>
+            <div className='w-100 p-4 hide-scrollbar'style={{backgroundColor:'rgb(38 40 40)',maxHeight:'380px',overflowY:'auto'}}>
 
 
                {messages?.map((msg, index) => (
@@ -319,20 +320,20 @@ onChange={(e)=>setText(e.target.value)} class="form-control border border-second
             </div>
              
            </div>
-          ):<div className='row mt-5'>
-            {appointment?<div className='col-5 fs-1 fw-semibold d-flex flex-column justify-content-center align-items-center text-light'>Your appointment at <span className='text-info'>{dayjs(appointment?.date)
+          ):<div className='row flex-md-row my-auto  flex-column mt-5'>
+            {appointment?<div className='col-md-5 mt-5 mt-md-0 col-12 fs-1 fw-semibold d-flex flex-column justify-content-center align-items-center text-light'>Your appointment at <span className='text-info'>{dayjs(appointment?.date)
       .hour(Number(appointment?.hour))
       .minute(Number(appointment?.minute)).format("dddd, D, h:mm A")}</span></div>:
                         <div className='col-5 fs-1 fw-semibold d-flex flex-column justify-content-center align-items-center text-light'>You have no upcoming appointments.</div>
 
 }
-            <div className='col-6 d-flex align-items-center justify-content-center'>
+            <div className='col-md-6 mt-4 mt-md-0 col-12 d-flex align-items-center justify-content-center'>
               <img src={next_appo} alt="Next Appointment" className='img-fluid h-100  object-cover w-100 ' />
             </div>
             </div>}
           </div>
         </div>
-
+<ToastContainer theme='colored' position='top-center' autoClose={2000}/>
     </div>
   )
 }

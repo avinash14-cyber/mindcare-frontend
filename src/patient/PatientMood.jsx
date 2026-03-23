@@ -305,7 +305,7 @@ const selectitem=(items)=>{
            
           </div>
 
-          <div className='col-md-5 mb-4 col-6 h-50 p-5' style={{backgroundColor:'rgb(38 40 40)'}}>
+          <div className='col-md-5 mb-4 col-6 h-50 p-2' style={{backgroundColor:'rgb(38 40 40)'}}>
             <h2 className='text-center text-info'>Your progress</h2>
            <PatientGraph  score={wellness} />
           </div>
@@ -321,7 +321,7 @@ const selectitem=(items)=>{
    </div>
   <div className="row">
   <div
-    className="container d-flex flex-column"
+    className="container d-flex flex-column px-3"
     style={{ backgroundColor: "rgb(38 40 40)" }}
   >
     <h3 className="text-light text-center ms-3 mt-4 mb-4">
@@ -331,7 +331,7 @@ const selectitem=(items)=>{
     {moodData?.map((mood, index) => (
       <div
         key={index}
-        className="container mb-3 rounded-3 px-3 py-2"
+        className=" mb-3 rounded-3 px-md-3  py-2"
         style={{ backgroundColor: "rgb(29 78 216 / 15%)" }}
       >
         <div className="d-flex align-items-center">
@@ -366,7 +366,7 @@ const selectitem=(items)=>{
 
         
           <div
-            className="d-flex flex-wrap gap-2"
+            className="d-flex flex-wrap justify-content-center gap-2"
             style={{ maxWidth: "360px" }}
           >
             {mood.influencers.map((inf, i) => (

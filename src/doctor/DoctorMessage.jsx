@@ -202,7 +202,7 @@ const handleEndSession = async () => {
     await endSessionApi(patientid,reqHeader)
 
     setChatApprove(false)
-
+    setMessages([])
     
     socket.emit("leaveRoom", patientid)
 

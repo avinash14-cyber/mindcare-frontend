@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import PatientSidebar from './PatientSidebar'
-import { faBullseye, faCalendarCheck, faPlus, faStar } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faBullseye, faCalendarCheck, faPlus, faStar } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GiMeditation } from "react-icons/gi";
 import { isExpired } from '../utils/isValidUtil';
@@ -15,6 +15,7 @@ import FollowDate from './appointments/FollowDate';
 import Swal from 'sweetalert2'
 import dayjs from "dayjs";
 import img from '../assets/no_appo.png'
+import { useNavigate } from 'react-router-dom';
 
 const PatientAppointments = () => {
 
@@ -50,7 +51,7 @@ const PatientAppointments = () => {
   const[refreshapo,setrefreshapo]=useState(false)
  const [loading, setLoading] = useState(true);
 const [followup,setFollowUp]=useState([])
- 
+const navigate=useNavigate()
   
 
  
@@ -339,16 +340,17 @@ const formattedTime = dayjs()
 
 
   return (
-    <div className='min-vh-100 w-100'>
+    <div className='min-vh-100 overflow-hidden w-100'>
        <div className=' row m-0'>
          <div className='col-3 d-none d-md-flex align-items-center flex-column' style={{backgroundColor:'rgb(38, 40, 40)',minHeight:'729px'}}>
                    <PatientSidebar/>
                 </div>
             
-        <div className="col-9 d-flex flex-column align-items-center" style={{backgroundColor:'rgb(31, 33, 33)'}}>
-          <div className='d-flex w-100 flex-row justify-content-between p-2'>
-            <h2 className='text-light'>My Appointments <FontAwesomeIcon className='ms-2 text-success' icon={faCalendarCheck} /></h2>
-            <button  className='bg-info text-dark p-1 fw-bold rounded rounded-2'data-bs-toggle="modal" data-bs-target="#staticBackdrop" >Book New Session <FontAwesomeIcon className='ms-1 fs-4 fw-medium text-warning' icon={faPlus} /></button>
+        <div className="col-md-9 col-12 min-vh-100 d-flex flex-column align-items-center" style={{backgroundColor:'rgb(31, 33, 33)'}}>
+          <div className='d-flex w-100 flex-row justify-content-between align-items-center p-2'>
+             <FontAwesomeIcon type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="staticBackdrop" className='text-light d-md-none d-inline me-3 fs-3 mt-2' icon={faBars} />
+            <h2 className='text-light '>My Appointments <FontAwesomeIcon className='ms-2 text-success' icon={faCalendarCheck} /></h2>
+            <button disabled={showappo} className='bg-info border-0 p-1 fs-5 text-dark  fw-semibold rounded rounded-2'data-bs-toggle="modal" data-bs-target="#staticBackdrop" >Book New Session <FontAwesomeIcon className='ms-1 fs-4 fw-medium text-warning' icon={faPlus} /></button>
           </div>
           <h3 className='text-light w-100 start-0 mt-3'>Upcoming Sessions</h3>
           {loading ? (
@@ -371,7 +373,7 @@ const formattedTime = dayjs()
                 
                  </div>
              </div>
-             <div className='d-flex align-items-center flex-row justify-content-between p-2 w-100' style={{backgroundColor:'rgb(38 40 40)'}}>
+             <div className='d-flex align-items-center flex-md-row flex-column justify-content-between p-2 w-100' style={{backgroundColor:'rgb(38 40 40)'}}>
               <div className='d-flex align-items-center flex-row gap-3'>
                 <div className='bg-info d-flex align-items-center justify-content-center text-dark px-3 fs-2 rounded-circle  fw-medium'sty>
                     {showappo?.doctorId?.name?.split('')[0]}
@@ -383,8 +385,8 @@ const formattedTime = dayjs()
                 </div>
               </div>
               <div className='d-flex flex-row h-25 gap-2 align-items-center'>
-                <button type="button" class="btn btn-info">Join video Call</button>
-                <button type="button" class="btn btn-outline-secondary">Message</button>
+                {/* <button type="button" class="btn btn-info">Join video Call</button> */}
+                <button onClick={()=>navigate('/patientmessage')} type="button" class="btn btn-outline-secondary">Message</button>
                 <button onClick={()=>handleDelete()} type="button" class="btn btn-outline-danger">Cancel</button>
 
               </div>
@@ -460,13 +462,13 @@ const formattedTime = dayjs()
            
          </div>
          <div className='w-100 d-flex justify-content-between flex-row'>
-         <p className='text-light '>Session type</p>
-         <p className='text-light'>Date and time</p>
-         <p className='text-light'>Doctors</p>
-          <p className='text-light'>Confirmation</p>
+         <p className='text-light w-50 w-md-auto'>Session type</p>
+         <p className='text-light w-50 w-md-auto'>Date and time</p>
+         <p className='text-light w-50 w-md-auto'>Doctors</p>
+          <p className='text-light w-50 w-md-auto'>Confirmation</p>
          </div>
         
-        <div className='w-100 mt-4 d-flex justify-content-between flex-column ' style={{height:'450px'}}>
+        <div className='w-100 mt-4 d-flex justify-content-between flex-column ' style={{minHeightheight:'450px'}}>
 
          {renderContent()}
          
@@ -481,6 +483,19 @@ const formattedTime = dayjs()
     </div>
   </div>
 </div>
+
+
+{/* offcanvas */}
+
+  <div class="offcanvas offcanvas-start"  style={{backgroundColor:'rgb(38, 40, 40)'}} data-bs-backdrop="static" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="staticBackdropLabel">
+      <div class="offcanvas-header">
+        
+        <button type="button" class="btn-close " data-bs-dismiss="offcanvas"  aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+       <PatientSidebar/>
+      </div>
+    </div>
     </div>
   )
 }
