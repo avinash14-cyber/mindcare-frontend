@@ -98,7 +98,7 @@ const getWellness=async()=>{
         "Authorization":`Bearer ${tok}`
       }
       const result=await getWellnessApi(reqHeader)
-      console.log(result);
+      
       
       setWellness(result?.data?.wellness)
     }

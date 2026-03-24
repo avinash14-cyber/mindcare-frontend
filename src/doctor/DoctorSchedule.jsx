@@ -1,17 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import DoctorSidebar from './DoctorSidebar'
-import { faClipboard } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faClipboard } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getDocAppointmentApi, handleDocDeleteTimeApi, handleDocScheduleApi, handleDoctorSlotsApi } from '../services/allApi'
 import Swal from 'sweetalert2'
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { ToastContainer,toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 dayjs.extend(isSameOrAfter);
 
 const DoctorSchedule = () => {
 
-
+  const navigate=useNavigate()
   const [selectedSlot, setSelectedSlot] = useState([]);
   const [remove,setRemove]=useState({})
   const[loading,setLoading]=useState(true)
@@ -195,6 +196,8 @@ if(selectedDays.length==0 || selectedSlot.length==0){
     Swal.fire({
       title: "Deleted!",
       text: "Your file has been deleted.",
+      background:'rgb(38, 40, 40)',
+      color:'white',
       icon: "success"
     });
     setRemove({})
@@ -230,11 +233,14 @@ useEffect(()=>{
 
 
   return (
-    <div className='w-100 min-vh-100'>
-        <div className='w-100 row'>
-          <DoctorSidebar/>
-          <div className='col-9 min-vh-100'style={{backgroundColor:'rgb(31, 33, 33)'}}>
+    <div className='w-100 overflow-hidden min-vh-100'>
+        <div className='  row'>
+            <div className='col-3 d-none d-md-flex align-items-center flex-column' style={{backgroundColor:'rgb(38, 40, 40)',minHeight:'729px'}}>
+                   <DoctorSidebar/>
+                </div>
+          <div className='col-md-9 col-12 min-vh-100'style={{backgroundColor:'rgb(31, 33, 33)'}}>
              <div className='w-100 p-3 d-flex flex-row justify-content-between'>
+              <FontAwesomeIcon type="button" data-bs-toggle="offcanvas" data-bs-target="#barspop" aria-controls="staticBackdrop" className='text-light d-md-none d-inline me-3 fs-3 mt-2' icon={faBars} />
                <h2 className='text-light'>Schedule Management<FontAwesomeIcon className='text-light ms-1' icon={faClipboard} /></h2>
                  <div className='d-flex gap-2 flex-row'>
                 <button type="button" className="btn btn-secondary"onClick={()=>handleRemove()}>Remove Slot</button>
@@ -242,7 +248,7 @@ useEffect(()=>{
                  </div>
              </div>
              <div className='w-100 mt-3 p-3  d-flex flex-row align-items-center justify-content-between'>
-               <div className='d-flex flex-row gap-3'>
+               <div className='d-flex flex-md-row flex-column gap-3'>
                   <h4 className="text-light">
      {daykey==dayMap[new Date().getDay()]?`Today,${new Date().toLocaleDateString("en-US", {
       month: "long",
@@ -276,7 +282,7 @@ useEffect(()=>{
                  </div>
              </div>
 
-             <div className='container overflow-hidden border rounded-3 border-secondary'>
+             <div style={{maxHeight:'500px'}} className='container hide-scrollbar  overflow-y-auto border rounded-3 border-secondary'>
              {loading?(
   <div className="d-flex justify-content-center mt-5 align-items-center w-100 h-100" >
     <div className="spinner-border my-auto text-info" role="status" />
@@ -291,30 +297,33 @@ useEffect(()=>{
                   app.hour === item.hour &&
                   app.minute === item.minute
               );
-              const now = dayjs();
+                        
 
-              const isToday = dayjs(isBooked?.date).isSame(now, "day");
+  let canStart = false;
 
-              let canStart = false;
+if (isBooked?.date) {
+  const now = dayjs();
 
-              if (isToday) {
-                const sessionTime = dayjs(isBooked?.date)
-                  .hour(Number(isBooked?.hour))
-                  .minute(Number(isBooked?.minute))
-                  .second(0);
+  const sessionTime = dayjs(isBooked.date)
+    .local()
+    .hour(Number(isBooked.hour))
+    .minute(Number(isBooked.minute))
+    .second(0);
 
-                canStart = now.isSameOrAfter(sessionTime);
-              }
+  const isToday = now.isSame(sessionTime, "day");
+
+  canStart = isToday && now.isSameOrAfter(sessionTime);
+}
              return(
                <div onClick={() => {
   if (!isBooked) {
     setRemove({ label: item.label, Day: daykey });
   }
-}} className={item.label==remove.label?' border-bottom border-secondary row  text-light bg-danger':' border-bottom border-secondary row'} key={item.label}>
-               <div className={item.label==remove.label?'text-light  px-3 py-4 col-1':'text-info  px-3 py-4 col-1'} style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
+}} className={item.label==remove.label?' border-bottom border-secondary row  text-light bg-danger':' border-bottom border-secondary row '}  key={item.label}>
+               <div className={item.label==remove.label?'text-light col-2 col-md-1 px-3 py-4':'text-info  px-3 col-2 py-4 col-md-1'} style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
                 {item.label}
                </div>
-               <div className='col-11 p-1 d-flex align-items-center justify-content-center ' style={{backgroundColor:'rgb(50 184 198 / 5%)'}}>
+               <div className='col-md-11 col-10 p-1 d-flex align-items-center justify-content-center ' style={{backgroundColor:'rgb(50 184 198 / 5%)'}}>
                  {isBooked?<div className='d-flex p-2 flex-column w-75 border border-2 border-primary'>
                   <div className='w-100 justify-content-between p-2 d-flex flex-row' style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
                   <p className='text-light fs-4 fw-semibold'>{isBooked?.patientName}</p>
@@ -326,7 +335,7 @@ useEffect(()=>{
                   <p className='p-1 rounded-2 text-info'style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>Ready</p>  
                   </div>
 
-                  <button disabled={!canStart} className='fs-4 mx-auto p-2 fw-medium rounded-2 border-0 bg-info text'>Start Now</button>
+                  <button onClick={()=>navigate('/doctormessage')} disabled={!canStart} className='fs-4 mx-auto p-2 fw-medium rounded-2 border-0 bg-info text'>Start Now</button>
                  </div>:<p className={item.label==remove.label?'text-light':'text-secondary'}>Available</p>}
                </div>
              </div>
@@ -373,6 +382,17 @@ useEffect(()=>{
     </div>
   </div>
 </div>
+
+<div class="offcanvas offcanvas-start"  style={{backgroundColor:'rgb(38, 40, 40)'}} data-bs-backdrop="static" tabindex="-1" id="barspop" aria-labelledby="staticBackdropLabel">
+  <div class="offcanvas-header">
+    
+    <button type="button" class="btn-close " data-bs-dismiss="offcanvas"  aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+   <DoctorSidebar/>
+  </div>
+</div>
+
 <ToastContainer theme='colored' position='top-center' autoClose={2000}/>
     </div>
   )

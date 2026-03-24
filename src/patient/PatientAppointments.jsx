@@ -207,7 +207,7 @@ setrefreshapo(prev=>!prev)
 }
 
 const handleDoclist=async()=>{
-  console.log(`inside func ${appointment.date}`);
+  
   
   const result= await chooseDoctorApi({date:appointment?.date,time:appointment?.time})
   

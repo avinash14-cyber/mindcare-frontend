@@ -7,7 +7,7 @@ import { ImArrowUpRight } from "react-icons/im";
 import { IoMdPeople } from 'react-icons/io'
 import { FaArrowAltCircleRight, FaStar } from "react-icons/fa";
 import { BsGraphUp } from 'react-icons/bs'
-import { faSquareCheck, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faSquareCheck, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useContext } from 'react'
 import { DoctorContext } from '../context/DocContext'
@@ -44,13 +44,16 @@ const Doctorportal = () => {
     handlePatientList()
   },[])
   return (
-    <div className='w-100 min-vh-100'>
-       <div className='row w-100'>
-         <DoctorSidebar/>
-         <div className='col-9 min-vh-100' style={{backgroundColor:'rgb(31, 33, 33)'}}>
+    <div className='w-100 overflow-hidden min-vh-100'>
+       <div className='row min-vh-100'>
+         <div className='col-3 d-none d-md-flex align-items-center flex-column' style={{backgroundColor:'rgb(38, 40, 40)',minHeight:'729px'}}>
+                   <DoctorSidebar/>
+                </div>
+         <div className='col-md-9 col-12 min-vh-100' style={{backgroundColor:'rgb(31, 33, 33)'}}>
            
             <div className='d-flex flex justify-content-between w-100 flex-row p-3'>
                <div className='d-flex  flex-column '>
+                 <FontAwesomeIcon type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop" className='text-light d-md-none d-inline me-3 fs-3 mt-2' icon={faBars} />
                 <h2 className='' style={{color:'rgb(50 184 198)'}}>{`Good Morning,${doc.name}`} <MdOutlineWavingHand />
 </h2>
                 <p className=''style={{color:'rgb(167 169 169 / 70%)'}}>Here's your practice overview for today</p>
@@ -58,12 +61,12 @@ const Doctorportal = () => {
 
                <div className='d-flex flex-md-row flex-column align-items-center'>
                  
-                 <button type="button"  class="btn ms-3 h-50 btn-danger"><PiSirenFill className='fs-4 text-warning me-1' />Crisis Alert </button>
+                 {/* <button type="button"  class="btn ms-3 h-50 btn-danger"><PiSirenFill className='fs-4 text-warning me-1' />Crisis Alert </button> */}
                </div>
             </div>
            
-           <div className='row w-100 d-flex justify-content-evenly'>
-            <div className="col-2 d-flex flex-column rounded rounded-2 overflow-hidden p-2 doctordash position-relative" style={{backgroundColor:'rgb(38 40 40)'}}>
+           <div className='row gap-md-5 gap-3 align-items-center justify-content-center  jusify-content-md-evenly  '>
+            <div className="col-md-2  col-5 d-flex flex-column rounded rounded-2 overflow-hidden p-2 doctordash position-relative" style={{backgroundColor:'rgb(38 40 40)',minHeight:'180px'}}>
                 <div className='d-flex flex-row justify-content-between'>
                     <LuNotepadText className='text-light fs-4' />
                     <p className='text-info fw-medium'><ImArrowUpRight className='text-primary fs-4' />+2</p>
@@ -71,13 +74,13 @@ const Doctorportal = () => {
                 <div className='mt-2'>
                   <p className='w-100 text-center fw-medium text-info fs-4'>{todayAppointments?.length}</p>
                   <p className='text-center mb-0'style={{color:'rgb(167 169 169 / 70%)'}}>Today's Appointments</p>
-                  <p className='text-center mt-0'style={{color:'rgb(167 169 169 / 70%)'}}>Next: Sarah Johnson at 10:00 AM</p>
+                  {/* <p className='text-center mt-0'style={{color:'rgb(167 169 169 / 70%)'}}>Next: Sarah Johnson at 10:00 AM</p> */}
 
                 </div>
             </div>
 
 
-               <div className="col-2 d-flex flex-column p-2 doctordash rounded rounded-2 overflow-hidden position-relative" style={{backgroundColor:'rgb(38 40 40)'}}>
+               <div className="col-md-2  col-5 d-flex flex-column p-2 doctordash rounded rounded-2 overflow-hidden position-relative" style={{backgroundColor:'rgb(38 40 40)',minHeight:'180px'}}>
                 <div className='d-flex flex-row justify-content-between'>
                     <IoMdPeople className='text-light fs-4' />
                     <p className='text-info fw-medium'><FaArrowAltCircleRight  className='text-primary fs-4' />+2</p>
@@ -91,7 +94,7 @@ const Doctorportal = () => {
                 </div>
             </div>
 
-              <div className="col-2 d-flex flex-column p-2 doctordash rounded rounded-2 overflow-hidden position-relative" style={{backgroundColor:'rgb(38 40 40)'}}>
+              <div className="col-md-2  col-5 d-flex flex-column p-2 doctordash rounded rounded-2 overflow-hidden position-relative" style={{backgroundColor:'rgb(38 40 40)',minHeight:'180px'}}>
                 <div className='d-flex flex-row justify-content-between'>
                  <p className='text-info fw-medium'><FaStar className='text-warning fs-4' /></p>
              <p className='text-info fw-medium'><ImArrowUpRight className='text-primary fs-4' />+0.1</p>
@@ -107,7 +110,7 @@ const Doctorportal = () => {
 
 
            
-              <div className="col-2 d-flex flex-column p-2 doctordash rounded rounded-2 overflow-hidden position-relative" style={{backgroundColor:'rgb(38 40 40)'}}>
+              <div className="col-md-2  col-5 d-flex flex-column p-2 doctordash rounded rounded-2 overflow-hidden position-relative" style={{backgroundColor:'rgb(38 40 40)',minHeight:'180px'}}>
                 <div className='d-flex flex-row justify-content-between'>
                     <BsGraphUp className='fs-4 text-warning' />
 
@@ -123,8 +126,8 @@ const Doctorportal = () => {
            
            </div>
 
-           <div className='w-100 mt-4 d-flex justify-content-evenly row'>
-               <div className='col-4 overflow-y-auto  hide-scrollbar 'style={{height:'300px',background:'linear-gradient(135deg,rgb(185 28 28 / 15%),rgb(8 145 178 / 15%))'}}>
+           <div className='mt-4 d-flex gap-3 justify-content-evenly row'>
+               <div className='col-md-4 col-10 overflow-y-auto  hide-scrollbar 'style={{height:'300px',background:'linear-gradient(135deg,rgb(185 28 28 / 15%),rgb(8 145 178 / 15%))'}}>
                 <h3 className='text-light fw-medium'>Priority Patients</h3>
                 {loading? (
   <div className="d-flex justify-content-center align-items-center w-100 h-100" >
@@ -164,7 +167,7 @@ const Doctorportal = () => {
                
                </div>
 
-               <div className='col-4 overflow-y-auto py-2 hide-scrollbar' style={{height:'300px',background:'linear-gradient(135deg,rgb(29 78 216 / 15%),rgb(107 33 168 / 15%))'}}>
+               <div className='col-md-4 col-10 overflow-y-auto py-2 hide-scrollbar' style={{height:'300px',background:'linear-gradient(135deg,rgb(29 78 216 / 15%),rgb(107 33 168 / 15%))'}}>
                 <h3 className='text-light fw-medium '>Today's Schedule</h3>
                 
                  {
@@ -233,6 +236,16 @@ const Doctorportal = () => {
            </div>
          </div>
        </div>
+                    <div class="offcanvas offcanvas-start"  style={{backgroundColor:'rgb(38, 40, 40)'}} data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
+  <div class="offcanvas-header">
+    
+    <button type="button" class="btn-close " data-bs-dismiss="offcanvas"  aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+   <DoctorSidebar/>
+  </div>
+</div>
+
     </div>
   )
 }

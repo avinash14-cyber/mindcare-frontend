@@ -38,7 +38,7 @@ const handleLogout=()=>{
 
 
   return (
-    <div className='col-3 d-none d-md-flex align-items-center flex-column' style={{backgroundColor:'rgb(38, 40, 40)',minHeight:'729px'}}>
+    <>
     <div className='w-100 d-flex flex-column align-items-center'>
          <div className='w-100 d-flex flex-row justify-content-center align-items-center'>
             <img src="public/images/brain.png" alt="" style={{width:'50px',height:'50px',objectFit:'contain'}} />
@@ -65,7 +65,9 @@ const handleLogout=()=>{
        
 
     </div>
-    </div>
+    </>
+    
+  
   )
 }
 

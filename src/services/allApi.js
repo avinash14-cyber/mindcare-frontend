@@ -159,6 +159,9 @@ export const getTimeSlotApi=async(reqHeader)=>{
 
 // end session
 export const endSessionApi=async(patientid,reqHeader)=>{
+
+    console.log('hii there api called');
+    
     return await commonAPI("PATCH",`${serverURL}/end_session/${patientid}`,"",reqHeader)
 }
 

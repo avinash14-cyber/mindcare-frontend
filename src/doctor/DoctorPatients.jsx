@@ -8,8 +8,9 @@ import dayjs from "dayjs"
 import { HiEmojiSad } from 'react-icons/hi'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MdEmojiEmotions } from 'react-icons/md'
-import { faFaceSmileBeam } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faFaceSmileBeam } from '@fortawesome/free-solid-svg-icons'
 import img from'../assets/doctor_patients.png'
+import { useNavigate } from 'react-router-dom'
 
 const DoctorPatients = () => {
 
@@ -25,6 +26,7 @@ const DoctorPatients = () => {
   const [filter, setFilter] = useState("All Patients")
   const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(true);
+  const navigate=useNavigate()
   useEffect(()=>{
     
       const handlePatientList=async()=>{
@@ -66,14 +68,17 @@ const getRisk = (wellness) => {
 
   
   return (
-    <div className='w-100 min-vh-100'>
-     <div className='w-100 row'>
-      <DoctorSidebar/>
-      <div className="col-9"style={{backgroundColor:'rgb(31, 33, 33)'}}>
+    <div className=' w-100 overflow-hidden min-vh-100 '>
+     <div className='min-vh-100 row  '>
+     <div className='col-3 d-none d-md-flex align-items-center flex-column' style={{backgroundColor:'rgb(38, 40, 40)',minHeight:'729px'}}>
+                   <DoctorSidebar/>
+                </div>
+      <div className="col-md-9 col-12"style={{backgroundColor:'rgb(31, 33, 33)'}}>
        <div className='w-100 d-flex flex-row p-2 justify-content-between'>
+           <FontAwesomeIcon type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop" className='text-light d-md-none d-inline me-3 fs-3 mt-2' icon={faBars} />
        <h3 className='text-light fw-medium'>Patient Management <IoMdPeople className='text-primary ms-1 fs-3' /></h3>
-       <div className='d-flex gap-2 align-items-center flex-row'>
-          <input type="email" class="form-control px-1 h-50 py-4" id="exampleFormControlInput1" onChange={(e) => setSearchTerm(e.target.value)} placeholder="search patients"/>
+       <div className='d-flex gap-2 align-items-center flex-md-row flex-column'>
+          <input type="email" class="form-control px-1  py-2" id="exampleFormControlInput1" onChange={(e) => setSearchTerm(e.target.value)} placeholder="search patients"/>
          <div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle py-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
     {filter}
@@ -114,7 +119,7 @@ const getRisk = (wellness) => {
         </div>
        </div>
        <h2 className='text-info text-center fw-medium'>{filter}</h2>
-      <div className='w-100 overflow-y-auto hide-scrollbar 'style={{height:'480px'}} >
+      <div className='container  overflow-y-auto  d-flex flex-column  align-items-center hide-scrollbar 'style={{height:'480px'}} >
          {loading?(
   <div className="d-flex justify-content-center align-items-center w-100 h-100" >
     <div className="spinner-border my-auto text-info" role="status" />
@@ -123,11 +128,11 @@ const getRisk = (wellness) => {
          
          filteredPatients?.length>0?(filteredPatients?.map(items=>{
           const risk = getRisk(items?.wellness)
-        return ( <div key={items._id} className='container mt-2 border border-secondary' style={{backgroundColor:'rgb(38 40 40)'}}>
+        return ( <div key={items._id} className='container  mt-2 border border-secondary' style={{backgroundColor:'rgb(38 40 40)'}}>
           <div className='w-100 d-flex flex-row justify-content-between p-2'>
-           <div className='d-flex flex-column'>
+           <div className='d-flex w-100 flex-column'>
              <h4 className='text-light fw-medium'>{items?.patientId?.name}</h4>
-             <p style={{color:'rgb(167 169 169 / 70%)'}}>Age:28</p>
+             <p style={{color:'rgb(167 169 169 / 70%)'}}>Age: {items?.patientId?.age ??"Not provided"}</p>
              </div>
           
           <div className='h-50 d-flex flex-column align-items-center justify-content-center p-1 rounded rounded-2' style={{backgroundColor:'rgb(50 184 198 / 10%)'}}>
@@ -139,7 +144,7 @@ const getRisk = (wellness) => {
           </div>
           
           </div>
-          <div className='row d-flex justify-content-evenly gap-4 mt-4 w-100'>
+          <div className='row  d-flex justify-content-evenly gap-4 mt-4 '>
             <div className="col-5 rounded rounded-3 d-flex flex-column" style={{backgroundColor:'rgb(29 78 216 / 15%)'}}>
                  <p className='text-light w-100 text-center'>Wellness Score</p>
                  <p className='fs-3 text-center fw-medium text-info'>{items?.wellness}</p>
@@ -168,8 +173,8 @@ const getRisk = (wellness) => {
          
 
           <div className='mt-3 mb-2'>
-            <button type="button" class="btn btn-info me-2">Start Session</button>
-            <button type="button" class="btn btn-light">View profile</button>
+            <button onClick={()=>navigate('/doctormessage')} type="button" class="btn btn-info me-2">Start Session</button>
+            {/* <button type="button" class="btn btn-light">View profile</button> */}
           </div>
        </div>)
 })):<div className='w-100 h-70 d-flex justify-content-center align-items-center '>
@@ -177,6 +182,17 @@ const getRisk = (wellness) => {
       </div>
       </div>
      </div>
+
+ <div class="offcanvas offcanvas-start"  style={{backgroundColor:'rgb(38, 40, 40)'}} data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
+  <div class="offcanvas-header">
+    
+    <button type="button" class="btn-close " data-bs-dismiss="offcanvas"  aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+   <DoctorSidebar/>
+  </div>
+</div>
+
     </div>
   )
 }

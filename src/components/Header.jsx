@@ -1,21 +1,23 @@
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Header = () => {
+
+  const navigate=useNavigate()
   return (
     <>
-    <header className='d-flex flex-row justify-content-between px-2 ' style={{backgroundColor:' #0f766e'}}>
+    <header className='d-flex flex-row position-fixed w-100 z-3 justify-content-between px-2 ' style={{backgroundColor:' #0f766e'}}>
        <div className='d-flex flex-row justify-content-around align-items-center' style={{width:'70px'}}>
             <img src="/images/brain.png" alt="" style={{width:'80px',height:'80px',objectFit:'contain'}} />
             <p className=' mt-3 fs-4 fw-bold' style={{color:'rgb(52,186,200)',fontFamily:"Work Sans , sans-serif;"}}>Mindcare</p>
        </div>
        <div className='mt-4 fw-medium d-none  hidden d-md-flex justify-content-around flex-row text-white end-0 align-items-center fs-4 h-100' style={{width:'450px'}}>
-       <Link className='cursor-pointer text-light'> <p className='d-inline-block effect  position-relative'>About</p></Link>
-       <Link className='cursor-pointer text-light' > <p className='d-inline-block effect position-relative' >Features</p></Link>
-       <Link className='cursor-pointer text-light'> <p className='d-inline-block effect position-relative'>Testimonials</p></Link>
-       <Link className='cursor-pointer text-light'> <p className='d-inline-block effect position-relative'>Contacts</p></Link>
+        <a href="#about" className='cursor-pointer text-light'> <p className='d-inline-block effect  position-relative'>About</p></a>
+       <a href="#features" className='cursor-pointer text-light' > <p className='d-inline-block effect position-relative' >Features</p></a>
+       <a href="#testimonials" className='cursor-pointer text-light'> <p className='d-inline-block effect position-relative'>Testimonials</p></a>
+       <a href="#footer" className='cursor-pointer text-light'> <p className='d-inline-block effect position-relative'>Contacts</p></a>
 
        
        </div>
@@ -29,10 +31,10 @@ const Header = () => {
     <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div className="offcanvas-body d-flex flex-column fs-4">
-     <Link className='cursor-pointer text-light'> <p className='d-inline-block effect  position-relative'>About</p></Link>
-       <Link className='cursor-pointer text-light' > <p className='d-inline-block effect position-relative' >Features</p></Link>
-       <Link className='cursor-pointer text-light'> <p className='d-inline-block effect position-relative'>Testimonials</p></Link>
-       <Link className='cursor-pointer text-light'> <p className='d-inline-block effect position-relative'>Contacts</p></Link>
+     <a href="#about" className='cursor-pointer text-light'> <p className='d-inline-block effect  position-relative'>About</p></a>
+       <a href="#features" className='cursor-pointer text-light' > <p className='d-inline-block effect position-relative' >Features</p></a>
+       <a href="#testimonials" className='cursor-pointer text-light'> <p className='d-inline-block effect position-relative'>Testimonials</p></a>
+       <a href="#footer" className='cursor-pointer text-light'> <p className='d-inline-block effect position-relative'>Contacts</p></a>
 
   </div>
 </div>

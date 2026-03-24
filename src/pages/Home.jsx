@@ -18,7 +18,7 @@ const Home = () => {
   return (
     <>
     
-    <div className='w-100 min-vh-100 position-relative overflow-hidden' style={{background:'linear-gradient(to bottom right,#1e2939,#203530,#242a30)'}}>
+    <div className='w-100  min-vh-100 position-relative overflow-hidden' style={{background:'linear-gradient(to bottom right,#1e2939,#203530,#242a30)'}}>
         <Header/>
 
         <div className='row w-100 mt-5 '>
@@ -83,7 +83,7 @@ const Home = () => {
 
 
     {/* featuress */}
-    <div className='w-100 m-0 min-vh-100 d-flex flex-column justify-content-center ' style={{backgroundColor:'rgb(38 40 40)'}}>
+    <div id='features' className='w-100 m-0 min-vh-100 d-flex flex-column justify-content-center ' style={{backgroundColor:'rgb(38 40 40)'}}>
  <h2 className='text-white mx-auto mt-4 '>Why Choose Mindcare?</h2>
  <p className='text-center' style={{color:'rgb(167 169 169 / 70%) '}}>Experience the future of mental healthcare with experts insights and gamified wellness tracking</p>
  <div className='row mt-3 w-100 d-flex justify-content-center align-items-center mx-auto  gap-5'>
@@ -125,7 +125,7 @@ Track your mood patterns, therapy progress, and wellness metrics with beautiful 
     </div>
 
 
-    <div
+    <div id='about'
       className="container-fluid h-100 py-5"
       style={{ background:'linear-gradient(to bottom right,#1e2939,#203530,#242a30)' }}
     >
@@ -196,7 +196,7 @@ Track your mood patterns, therapy progress, and wellness metrics with beautiful 
 
 {/* testimonialss */}
 
-    <div className='w-100  d-flex flex-column align-items-center justify-content-center   ' style={{backgroundColor:'rgb(53, 36, 30)'}}>
+    <div id='testimonials' className='w-100  d-flex flex-column align-items-center justify-content-center   ' style={{backgroundColor:'rgb(53, 36, 30)'}}>
     <h2 className='text-light text-center  mt-3  '>Success Stories</h2>
     <p className='text-center' style={{color:'rgb(167 169 169 / 70%)'}}>See how MindCare has transformed lives</p>
    <div className='row w-100 d-flex flex-md-row justify-content-center align-items-center mb-5 mt-3 flex-column gap-4'>
@@ -258,7 +258,7 @@ Track your mood patterns, therapy progress, and wellness metrics with beautiful 
 
 
 {/* Footer */}
-<div className=' d-flex flex-column   align-items-center w-100 'style={{backgroundColor:'rgb(18, 27, 37)',height:'fit-content'}}>
+<div id='footer' className=' d-flex flex-column   align-items-center w-100 'style={{backgroundColor:'rgb(18, 27, 37)',height:'fit-content'}}>
 <div className='container  bg-danger  mt-5 rounded' >
 <p className='text-light fs-4 my-auto text-center'> In crisis? Call 1-800-273-8255 or TEXT HOME to 741741</p>
 

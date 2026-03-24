@@ -7,24 +7,24 @@ import { PatientContext } from '../context/UserContext';
 const PatientSidebar = () => {
 
       const {patient,setPatient}=useContext(PatientContext)
-     const [active, setActive] = useState(null);
+    //  const [active, setActive] = useState(null);
      const navigate = useNavigate();
      const location=useLocation()
      
     const menuItems = [
     { id: 1, label: "Dashboard", icon: faHouse, iconClass: "text-primary ms-2 me-1",path:'/patient' },
     { id: 2, label: "Mood Tracker", icon: faHeart, iconClass: "text-danger ms-2 me-1",path:'/patientmood' },
-    { id: 3, label: "Achievements", icon: faMedal, iconClass: "text-warning ms-2 me-1",path:'/patientachievments' },
+    // { id: 3, label: "Achievements", icon: faMedal, iconClass: "text-warning ms-2 me-1",path:'/patientachievments' },
     { id: 4, label: "Appointments", icon: faCalendarCheck, iconClass: "text-light ms-2 me-1",path:'/patientappointments' },
     { id: 5, label: "Messages", icon: faMessage, iconClass: "text-info ms-2 me-1",path:'/patientmessage' },
     { id: 6, label: "Logout", icon: faRightFromBracket, iconClass: "text-danger ms-2 me-1",path:'/' },
   ];
-useEffect(()=>{
-  const option=menuItems.find(items=>items.path==location.pathname)
-  if(option){
-    setActive(option.id)
-  }
-},[location.pathname])
+// useEffect(()=>{
+//   const option=menuItems.find(items=>items.path==location.pathname)
+//   if(option){
+//     setActive(option.id)
+//   }
+// },[location.pathname])
 
 const handleLogout=()=>{
   
@@ -56,9 +56,10 @@ const handleLogout=()=>{
     <div  className='mt-3 w-100 d-flex align-items-start gap-3 flex-column'>
         {
             menuItems.map(items=>(
-                <div key={items.id} className={items.label=="Logout"?'position-relative dash  rounded rounded-3 overflow-hidden  py-3 w-75 logout fw-medium ms-5  fs-5':'position-relative dash  rounded rounded-3 overflow-hidden  py-3 w-75  fw-medium ms-5  fs-5'} style={{cursor:'pointer',backgroundColor:items.id==active?"rgb(52,186,200)":"",color:items.id==active?"black":""}} onClick={()=>{setActive(items.id);if (items.path && items.label!="Logout") {
-    navigate(items.path);
-      }
+                <div key={items.id} className={items.label=="Logout"?'position-relative dash  rounded rounded-3 overflow-hidden  py-3 w-75 logout fw-medium ms-5  fs-5':'position-relative dash  rounded rounded-3 overflow-hidden  py-3 w-75  fw-medium ms-5  fs-5'} style={{cursor:'pointer',backgroundColor:location.pathname === items.path?"rgb(52,186,200)":"",color:location.pathname === items.path?"black":""}} onClick={()=>{
+    if (items.path && items.label!="Logout") {
+      navigate(items.path);
+    }
     items.label=="Logout"?handleLogout():""
     }}><FontAwesomeIcon icon={items.icon} className={items.iconClass} />{items.label}</div >
             ))

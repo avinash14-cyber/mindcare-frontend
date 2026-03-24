@@ -17,6 +17,7 @@ const PatientAuth = () => {
     const [regData,setregData]=useState({
       name:"",
       email:"",
+      age:"",
       password:"",
       contact:"",
       emergency:""
@@ -65,9 +66,32 @@ const PatientAuth = () => {
 
 
       const handleRegister=async()=>{
-         const {name,email,password,contact,emergency}=regData
+         const {name,email,password,contact,emergency,age}=regData
 
-         if(name && email && password && contact && emergency){
+         
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        const phoneRegex = /^[0-9]{10}$/
+
+         if (!name || !email || !password || !contact || !emergency || !age) {
+    return toast.warning("Please fill the form")
+  }
+
+   if (!emailRegex.test(email.trim())) {
+    return toast.warning("Invalid email format")
+  }
+
+  
+  if (!phoneRegex.test(contact)) {
+    return toast.warning("Contact must be 10 digits")
+  }
+
+ 
+  if (!phoneRegex.test(emergency)) {
+    return toast.warning("Emergency contact must be 10 digits")
+  }
+
+        
 
           const result= await handleRegisterApi(regData)
           if(result.status==200 || result.status===201){
@@ -75,6 +99,7 @@ const PatientAuth = () => {
             setregData({
                name:"",
       email:"",
+      age:"",
       password:"",
       contact:"",
       emergency:""
@@ -89,6 +114,7 @@ const PatientAuth = () => {
              setregData({
                name:"",
       email:"",
+      age:"",
       password:"",
       contact:"",
       emergency:""
@@ -100,6 +126,7 @@ const PatientAuth = () => {
              setregData({
                name:"",
       email:"",
+      age:"",
       password:"",
       contact:"",
       emergency:""
@@ -107,10 +134,8 @@ const PatientAuth = () => {
             })
           }
 
-         }
-         else{
-          toast.warning("Please fill the form")
-         }
+         
+         
           
       }
     
@@ -140,6 +165,7 @@ const PatientAuth = () => {
                 </div>
                   <input type="text" value={regData.name} onChange={(e)=>setregData({...regData,name:e.target.value})} class="form-control bg-secondary mb-3 " id="exampleFormControlInput1 " placeholder="Name"/>
                         <input value={regData.email} onChange={(e)=>setregData({...regData,email:e.target.value})} type="email" id="inputPassword6" class="form-control bg-secondary mb-3" placeholder='Email' aria-describedby="passwordHelpInline"/>
+                          <input value={regData.age} onChange={(e)=>setregData({...regData,age:e.target.value})} type="text" id="inputPassword6" class="form-control bg-secondary mb-3" placeholder='Age' aria-describedby="passwordHelpInline"/>
                         <input value={regData.password} onChange={(e)=>setregData({...regData,password:e.target.value})} type="text" id="inputPassword6" class="form-control bg-secondary mb-3" placeholder=' Password' aria-describedby="passwordHelpInline"/>
                         <input value={regData.contact} onChange={(e)=>setregData({...regData,contact:e.target.value})} type="text" id="inputPassword6" class="form-control bg-secondary mb-3" placeholder='Contact' aria-describedby="passwordHelpInline"/>
                         <input value={regData.emergency} onChange={(e)=>setregData({...regData,emergency:e.target.value})} type="text" id="inputPassword6" class="form-control bg-secondary mb-3" placeholder='Emergency Contact' aria-describedby="passwordHelpInline"/>

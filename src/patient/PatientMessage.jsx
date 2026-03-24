@@ -8,6 +8,8 @@ import next_appo from '../assets/next_appointment.png'
 import { FaRegClock } from "react-icons/fa";
 import { ToastContainer,toast } from 'react-toastify'
 import dayjs from "dayjs";
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const PatientMessage = () => {
 
@@ -132,7 +134,7 @@ const fetchTime=async()=>{
 
       const result=await getTimeSlotApi(reqHeader)
       setAppointment(result?.data)
-      setLoading(false)
+     
       if(!result?.data){
         setChatApprove(false)
       }
@@ -168,7 +170,10 @@ const fetchTime=async()=>{
 // }
 
 useEffect(() => {
-  if (!appointment) return
+  if (!appointment){
+    setLoading(false)
+    return
+  } 
 
   const interval = setInterval(() => {
     const now = dayjs()
@@ -240,6 +245,8 @@ useEffect(() => {
           <div className='col-md-9 min-vh-100 col-12'style={{backgroundColor:'rgb(31, 33, 33)'}}>
            {/* heading */}
            <div className='d-flex w-100 p-2 mt-3 flex-row justify-content-between'>
+            <FontAwesomeIcon type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop" className='text-light d-md-none d-inline me-3 fs-3 mt-2' icon={faBars} />
+               
             <h2 className='text-light'>Message <MdMessage className='text-light' /> </h2>
            
            </div>
@@ -333,6 +340,16 @@ onChange={(e)=>setText(e.target.value)} class="form-control border border-second
             </div>}
           </div>
         </div>
+ <div class="offcanvas offcanvas-start"  style={{backgroundColor:'rgb(38, 40, 40)'}} data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
+  <div class="offcanvas-header">
+    
+    <button type="button" class="btn-close " data-bs-dismiss="offcanvas"  aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+   <PatientSidebar/>
+  </div>
+</div>
+
 <ToastContainer theme='colored' position='top-center' autoClose={2000}/>
     </div>
   )

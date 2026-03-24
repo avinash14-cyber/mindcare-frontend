@@ -8,6 +8,8 @@ import { endSessionApi, getAllIdApi, getDocChatHistoryApi } from '../services/al
 import dayjs from "dayjs";
 import { FaRegClock } from 'react-icons/fa';
 import Swal from 'sweetalert2'
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const DoctorMessage = () => {
    
    const{doc}=useContext(DoctorContext)
@@ -15,7 +17,7 @@ const DoctorMessage = () => {
    const [text, setText] = useState("")
    const[queue,setQueue]=useState([])
    const[loading,setLoading]=useState(true)
-   const[chatapprove,setChatApprove]=useState(true)
+   const[chatapprove,setChatApprove]=useState(false)
    const [timeLeft, setTimeLeft] = useState("")
    const [isOnline, setIsOnline] = useState(false)
    const patientid=queue?.patientId?._id
@@ -43,7 +45,7 @@ const DoctorMessage = () => {
          const result=await getAllIdApi(reqHeader)
          if(result.status==200){
             setQueue(result?.data)
-            setLoading(false)
+            // setLoading(false)
          }
 
       }catch(err){
@@ -81,30 +83,33 @@ const DoctorMessage = () => {
      setText("")
    }
    
-  //  useEffect(() => {
-  //    if (queue?.length === 0) return
+   useEffect(() => {
+     if (!queue){
+        setLoading(false)
+        return
+     } 
    
-  //    const interval = setInterval(() => {
-  //      const now = dayjs()
+     const interval = setInterval(() => {
+       const now = dayjs()
    
-  //      const appointmentTime = dayjs(queue[0]?.date)
-  //        .hour(Number(queue[0]?.hour))
-  //        .minute(Number(queue[0]?.minute))
+       const appointmentTime = dayjs(queue?.date)
+         .hour(Number(queue?.hour))
+         .minute(Number(queue?.minute))
    
-  //      const start = appointmentTime.subtract(5, "minute")
-  //      const end = appointmentTime.add(30, "hour")
+       const start = appointmentTime
+       const end = appointmentTime.add(30, "hour")
    
-  //      const canChat = now.isBetween(start, end, null, "[)")
-  //      setLoading(false)
-  //      if (canChat) {
-  //        setChatApprove(true)
-         
-  //        clearInterval(interval) 
-  //      }
-  //    }, 1000)
+       const canChat = now.isBetween(start, end, null, "[)")
+       setLoading(false)
+       if (canChat) {
+         setChatApprove(true)
+         setLoading(false)
+         clearInterval(interval) 
+       }
+     }, 1000)
    
-  //    return () => clearInterval(interval)
-  //  }, [queue])
+     return () => clearInterval(interval)
+   }, [queue])
    
    useEffect(() => {
    
@@ -128,15 +133,20 @@ const DoctorMessage = () => {
    
    }, [chatId])
    
-const start=dayjs(queue?.date)
-      .hour(Number(queue?.hour))
-      .minute(Number(queue?.minute))
+// const start=dayjs(queue?.date)
+//       .hour(Number(queue?.hour))
+//       .minute(Number(queue?.minute))
  
-      const end = start.add(1, "hour")
+//       const end = start.add(1, "hour")
 
   useEffect(() => {
   if (!queue) return
 
+  const start=dayjs(queue?.date)
+      .hour(Number(queue?.hour))
+      .minute(Number(queue?.minute))
+ 
+      const end = start.add(1, "hour")
   const interval = setInterval(() => {
     const now = dayjs()
 
@@ -171,7 +181,8 @@ const handleEndSession = async () => {
   try {
 
           const secondsLeft = getTimeLeftInSeconds()
-
+            console.log("inside end function");
+            
     
     if (secondsLeft >= 300) {
       const result = await Swal.fire({
@@ -185,12 +196,13 @@ const handleEndSession = async () => {
         cancelButtonColor: "rgb(52,186,200)",
         confirmButtonText: "Yes, end it"
       })
-
-    
       if (!result.isConfirmed) {
         return
       }
+    
+      
     }
+    
 
    
           const token=sessionStorage.getItem('DOCTOK')
@@ -244,22 +256,28 @@ useEffect(() => {
 }, [patientid])
 
   return (
-    <div className='w-100 min-vh-100'>
-        <div className='row w-100'>
-          <DoctorSidebar/>
-          <div className='col-9'style={{backgroundColor:'rgb(31, 33, 33)'}}>
+    <div className='w-100 overflow-hidden min-vh-100'>
+        <div className='row  min-vh-100'>
+          <div className='col-3 d-none d-md-flex align-items-center flex-column' style={{backgroundColor:'rgb(38, 40, 40)',minHeight:'729px'}}>
+                   <DoctorSidebar/>
+                </div>
+          <div className='col-md-9 col-12'style={{backgroundColor:'rgb(31, 33, 33)'}}>
            {/* heading */}
            <div className='d-flex w-100 p-2 mt-3 flex-row justify-content-between'>
-            <h2 className='text-light'>Message <MdMessage className='text-light' /> </h2>
-            <button type="button" class="btn btn-info">New Message</button>
+            <div className='d-flex flex-row '>
+              <FontAwesomeIcon type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop" className='text-light d-md-none d-inline me-3 fs-3 mt-2' icon={faBars} />
+              <h2 className='text-light mt-1'>Message <MdMessage className='text-light' /> </h2>
+            </div>
+            
+            {/* <button type="button" class="btn btn-info">New Message</button> */}
            </div>
 
           {loading?(<div className='d-flex justify-content-center align-items-center' style={{ minHeight: '50vh' }}>
             <div className='spinner-border text-info' role='status'>
               <span className='visually-hidden'>Loading...</span>
             </div>
-          </div>) :chatapprove?( <div className='container border border-rounded rounded-3 border-secondary p-0 d-flex flex-column'>
-            <div className='w-100 m-0 border border-secondary border-rounded rounded-3 d-flex p-3 flex-row align-items-center justify-content-between'style={{backgroundColor:'rgb(38 40 40)'}}>
+          </div>) :chatapprove?( <div className='w-100 mt-5 border border-rounded rounded-3 border-secondary  d-flex flex-column'>
+            <div className=' m-0 w-100 border border-secondary border-rounded rounded-3 d-flex p-3 flex-row align-items-center justify-content-between'style={{backgroundColor:'rgb(38 40 40)'}}>
                <div className='d-flex flex-row  gap-2'>
                  <div className='bg-info d-flex align-items-center justify-content-center fs-4 rounded-circle h-75 py-2 px-3 '>
                     {queue?.patientId?.name?.charAt(0)?.toUpperCase()}
@@ -282,7 +300,7 @@ useEffect(() => {
             </div>
            
             <div className='w-100 p-4'style={{backgroundColor:'rgb(38 40 40)'}}>
-                  {messages?.map((msg, index) => (
+                  {messages?.map((msg, index) => (  
 
     <div key={index} className="mb-3">
 
@@ -321,19 +339,31 @@ useEffect(() => {
                <button onClick={sendMessage} className='p-2 bg-info text-dark fw-bold rounded mt-2'>Send Message</button>
             </div>
              
-           </div>):<div className='row mt-5'>
-                       {queue?.length>0?<div className='col-5 fs-1 fw-semibold d-flex flex-column justify-content-center align-items-center text-light'>Next session at <span className='text-info'>{dayjs(queue[0]?.date)
-                 .hour(Number(queue[0]?.hour))
-                 .minute(Number(queue[0]?.minute)).format("dddd, D, h:mm A")}</span></div>:
-                                   <div className='col-5 fs-1 fw-semibold d-flex flex-column justify-content-center align-items-center text-light'>You have no upcoming sessions.</div>
+           </div>):<div className='row  align-items-center justify-content-center   mt-5'>
+                       {queue?<div className='col-md-5 mt-5 col-12 fs-1 fw-semibold d-flex flex-column justify-content-center align-items-center text-light'>Next session at <span className='text-info'>{dayjs(queue?.date)
+                 .hour(Number(queue?.hour))
+                 .minute(Number(queue?.minute)).format("dddd, D, h:mm A")}</span></div>:
+                                   <div className='col-md-5 col-12 fs-1 fw-semibold d-flex flex-column justify-content-center align-items-center text-light'>You have no upcoming sessions.</div>
            
            }
-                       <div className='col-6 d-flex align-items-center justify-content-center'>
+                       <div className='col-md-6 mt-3 col-10 d-flex align-items-center justify-content-center'>
                          <img src={next_appo} alt="Next Appointment" className='img-fluid h-100  object-cover w-100 ' />
                        </div>
                        </div>}
           </div>
         </div>
+
+
+<div class="offcanvas offcanvas-start"  style={{backgroundColor:'rgb(38, 40, 40)'}} data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
+  <div class="offcanvas-header">
+    
+    <button type="button" class="btn-close " data-bs-dismiss="offcanvas"  aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+   <DoctorSidebar/>
+  </div>
+</div>
+
 
     </div>
   )

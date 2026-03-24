@@ -52,7 +52,7 @@ const PatientDashboard = () => {
           "Authorization":`Bearer ${tok}`
         }
         const result=await getWellnessApi(reqHeader)
-        console.log(result);
+       
         
         setWellness(result?.data?.wellness)
       }
@@ -97,7 +97,7 @@ const getlatestMood=async()=>{
 
       if(result){
         if(result.status==200 || result.status==201){
-          console.log(result);
+          
           toast.success("Mood updated successfully")
           
         }
@@ -286,7 +286,7 @@ const diffInHours = totalHours % 24;
               <h4 className='text-light mt-2'>Today's Mood</h4>
               <div className='w-100 d-flex align-items-center mt-2 flex-column'>
                 <div id='moodesh' className='border d-flex justify-content-center align-items-center border-3 rounded-circle border-info 'style={{width:'60px',height:'60px',boxShadow:'0px 0px 5px 1px white' }}>
-                {moodEmojis[latestmood] || "No mood"}
+                {moodEmojis[latestmood] || ""}
 
                 </div>
                 <p className='text-info fs-6 mt-2'>{latestmood || 'No mood recorded'}</p>
