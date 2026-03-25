@@ -42,7 +42,7 @@ const handleLogout=()=>{
     <>
     <div className='w-100 d-flex flex-column align-items-center'>
          <div className='w-100 d-flex flex-row justify-content-center align-items-center'>
-            <img src="public/images/brain.png" alt="" style={{width:'50px',height:'50px',objectFit:'contain'}} />
+            <img src="/images/brain.png" alt="" style={{width:'50px',height:'50px',objectFit:'contain'}} />
         <h4 className=' text-center'style={{color:'rgb(52,186,200)',fontFamily:"Work Sans , sans-serif;"}}>  Mindcare</h4>
          </div>
          <p className='mt-0' style={{color:'rgb(167 169 169 / 70%)'}}>Patient Portal</p>
