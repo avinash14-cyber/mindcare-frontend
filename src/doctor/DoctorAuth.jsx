@@ -114,9 +114,9 @@ console.log(`this is doc ${doc}`);
                       <input type="email" value={doclog.license} onChange={e=>setDoclog(prev=>({...prev,license:e.target.value}))} class="form-control bg-secondary mb-3 " id="exampleFormControlInput1 " placeholder="Medical License number"/>
                             <input type="password" value={doclog.password} onChange={e=>setDoclog(prev=>({...prev,password:e.target.value}))} id="inputPassword6" class="form-control bg-secondary mb-3" placeholder='Password' aria-describedby="passwordHelpInline"/>
                             <button onClick={()=>handleLogin()} type="button" class="btn btn-info w-75 fw-medium fs-5 mb-2">Login</button>
-                           <p className='text-light mb-1'>Are u a new user?</p>
-                            <p style={{cursor:'pointer' }} className=' text-info' onClick={()=>setLogin(!login)}>Register</p>
-    
+                          
+     {/* <p className='text-light mb-1'>Are u a new user?</p>
+                            <p style={{cursor:'pointer' }} className=' text-info' onClick={()=>setLogin(!login)}>Register</p> */}
     
                 </div>: <div className='glasseffect d-flex justify-content-center flex-column align-items-center border border-secondary rounded-3 px-5 py-3'>
                     <div className='d-flex flex-column align-items-center'>
